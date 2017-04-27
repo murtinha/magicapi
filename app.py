@@ -9,7 +9,7 @@ migrate = Migrate(app,db)
 
 from tables import Cards,Users,Clans
 import routes
-
+import jsonloadtest
 # To initialize db, open python shell 
 #from application import db -> db.create_all()
 
