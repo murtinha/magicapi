@@ -34,7 +34,7 @@ class Users(db.Model):
 	username = db.Column(db.String, unique = True)
 	email = db.Column(db.String, unique = True)
 	cards = db.relationship('Cards', backref = 'users', lazy = 'dynamic')
-	clan = db.Column(db.Integer, db.ForeignKey('clan.id'))
+	clan = db.Column(db.Integer, db.ForeignKey('clans.id'))
 
 	def __init_(self,username,email,cards,clan):
 
