@@ -36,6 +36,17 @@ class Cards(db.Model):
 		self.text = text
 		self.artist = artist
 
+	def __repr__(self):
+
+		return json.dumps(dict(id = self.id,
+							   name = self.name,
+							   manaCost = self.manaCost,
+							   colors = self.colors,
+							   types = self.types,
+							   rarity = self.rarity,
+							   text = self.text,
+							   artist = self.artist))
+
 # TABLE FOR USERS
 
 class Users(db.Model):
