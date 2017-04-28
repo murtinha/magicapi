@@ -38,28 +38,28 @@ class Users(db.Model):
 	email = db.Column(db.String, unique = True)
 	cards_id = db.Column(db.String, db.ForeignKey('cards.id'))
 	cards = db.relationship('Cards', foreign_keys = cards_id)
-	clan = db.Column(db.Integer, db.ForeignKey('clans.id'))
+	# clan = db.Column(db.Integer, db.ForeignKey('clans.id'))
 
-	def __init_(self,username,email,cards,clan):
+	def __init__(self,username,email,cards_id):
 
 		self.username = username
 		self.email = email
-		self.cards = cards
-		self.clan = clan
+		self.cards = cards_id
+		# self.clan = clan
 
 # TABLE FOR CLANS
 
-class Clans(db.Model):
-	__tablename__ = 'clans'
+# class Clans(db.Model):
+# 	__tablename__ = 'clans'
 
-	id = db.Column(db.String, primary_key = True)
-	name = db.Column(db.String, unique = True)
-	usernames = db.relationship('Users', backref = 'clans', lazy = 'dynamic')  
+# 	id = db.Column(db.String, primary_key = True)
+# 	name = db.Column(db.String, unique = True)
+# 	usernames = db.relationship('Users', backref = 'clans', lazy = 'dynamic')  
 
-	def __init__(self,name,usernames):
+# 	def __init__(self,name,usernames):
 
-		self.name = name
-		self.usernames = usernames
+# 		self.name = name
+# 		self.usernames = usernames
 
 
 # ONE USER HAS MANY CARDS BUT ONE CLAN
