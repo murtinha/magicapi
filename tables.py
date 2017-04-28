@@ -23,6 +23,7 @@ class Cards(db.Model):
 	rarity = db.Column(db.String) 
 	text = db.Column(db.String)
 	artist = db.Column(db.String)
+	owners = db.relationship('Users', secondary = decks, backref = db.backref('mycards', lazy = 'dynamic'))
 
 	def __init__(self,id,name, manaCost, colors, types, rarity, text, artist):
 		
