@@ -1,5 +1,5 @@
 from app import app,db
-from jsonloadtest import data
+from loadjsoncards import data
 from tables import Cards, Users
 from flask import request, json
 
@@ -18,13 +18,33 @@ def health_check():
 
 @app.route('/add', methods = ['POST'])
 def add_cards():
-
-	for cards in data['cards']:
-	 	dbcreate = Cards(cards['id'],cards['name'],cards['manaCost'],
-	 		             str(cards['colors']),str(cards['types']),
-	 		             cards['rarity'],cards['text'],cards['artist'])
-	 	db.session.add(dbcreate)
-		db.session.commit()
+	card_name =''
+	card_manaCost = ''
+	card_colors = []
+	card_types = []
+	card_rarity = ''
+	card_text = ''
+	card_artist = ''
+	for card in data.values():
+		if 'name' in card:
+			card_name = card['name']
+		if 'manaCost' in card:
+			card_manaCost = card['manaCost']
+		if 'colors' in card:
+			card_colors = card['colors']
+		if 'types' in card:
+			card_types = card['types']
+		if 'rarity' in card:
+			card_rarity = card['rarity']
+		if 'text' in card:
+			card_text = card['text']
+		if 'artist' in card:
+			card_artist = card['artist']
+  		dbcreate = Cards(card_name,card_manaCost,
+	  		             str(card_colors),str(card_types),
+	  		             card_rarity,card_text,card_artist)
+	  	db.session.add(dbcreate)
+	 	db.session.commit()
 	return 'added'
 # --------------------------------------------------------------
 

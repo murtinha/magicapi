@@ -7,9 +7,9 @@ app.config.from_object('config.BaseConfig')
 db = SQLAlchemy(app)
 migrate = Migrate(app,db)
 
-from tables import Cards,Users,decks
+from tables import Cards,Users
 import routes
-import jsonloadtest
+import loadjsoncards
 
 # To initialize db, open python shell 
 #from application import db -> db.create_all()

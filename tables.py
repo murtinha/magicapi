@@ -7,7 +7,7 @@ from flask import json
 
 decks = db.Table('decks',
 		db.Column('user_id', db.Integer, db.ForeignKey('users.user_id')),
-		db.Column('id', db.String, db.ForeignKey('cards.id'))
+		db.Column('id', db.Integer, db.ForeignKey('cards.id'))
 	)
 
 # TABLE FOR CARDS
@@ -15,7 +15,7 @@ decks = db.Table('decks',
 class Cards(db.Model):
 	__tablename__ = 'cards'
 
-	id = db.Column(db.String, primary_key = True)
+	id = db.Column(db.Integer, primary_key = True)
 	name = db.Column(db.String, unique = True)
 	manaCost = db.Column(db.String) # "2WUB"
 	colors = db.Column(db.String) # "["White", "Blue", "Black"]"
@@ -25,9 +25,8 @@ class Cards(db.Model):
 	artist = db.Column(db.String)
 	owners = db.relationship('Users', secondary = decks, backref = db.backref('mycards', lazy = 'dynamic'))
 
-	def __init__(self,id,name, manaCost, colors, types, rarity, text, artist):
+	def __init__(self,name, manaCost, colors, types, rarity, text, artist):
 		
-		self.id = id
 		self.name = name
 		self.manaCost = manaCost
 		self.colors = colors
