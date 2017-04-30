@@ -17,7 +17,7 @@ class Cards(db.Model):
 
 	id = db.Column(db.String, primary_key = True)
 	name = db.Column(db.String, unique = True)
-	manaCost = db.Column(db.String) # "{2}{W}{U}{B}"
+	manaCost = db.Column(db.String) # "2WUB"
 	colors = db.Column(db.String) # "["White", "Blue", "Black"]"
 	types = db.Column(db.String) # "["Artifact","Creature"]"
 	rarity = db.Column(db.String) 

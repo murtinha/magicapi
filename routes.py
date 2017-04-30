@@ -30,23 +30,98 @@ def add_cards():
 
 # SHOWING CARDS BY NAME
 
-@app.route('/<name>')
-def show_card(name):
+@app.route('/name')
+def show_card_by_name():
 
-	card = Cards.query.filter_by(name=name).first()
+	user_input = request.get_json()
+	name = user_input['name']
+	card = Cards.query.filter_by(name = name).first()
 	return str(card)
+# --------------------------------------------------------------
 
+# SHOWING CARDS BY COLOR
+
+# @app.route('/colors')
+# def show_card_colors():
+
+#  	user_input = request.get_json()
+#  	print user_input['colors'][0]
+#  	return 'ok'
+#   card = Cards.query.filter_by(colors = colors).all()
+#   cardnames = []
+#   for number in range(len(card)):
+# 	cardnames.append(card[number].name)
+#   return json.dumps(dict(names = cardnames))
+# --------------------------------------------------------------
+
+# SHOW CARD USERS
+
+@app.route('/users')
+def show_card_users():
+
+	user_input = request.get_json()
+	card = user_input['name']
+	users = Cards.query.filter_by( name = card).first()
+	usernames = []
+	for user in users.owner:
+		usernames.append(user.username)
+	return json.dumps(dict(usernames = usernames))
+# --------------------------------------------------------------
+
+# SHOWING CARDS BY ARTIST
+
+@app.route('/artist')
+def show_card_by_artist():
+
+	user_input = request.get_json()
+	artist = user_input['artist']
+	card = Cards.query.filter_by(artist = artist).all()
+	cardnames = []
+	for number in range(len(card)):
+		cardnames.append(card[number].name)
+	return json.dumps(dict(names = cardnames))
+# --------------------------------------------------------------
+
+# SHOWING CARDS BY MANACOST
+
+@app.route('/manacost')
+def show_card_by_manacost():
+
+	user_input = request.get_json()
+	manacost = user_input['manacost']
+	formated_mana_cost = ''
+	cardnames = []
+	for letter in manacost:
+		formated_mana_cost += '{%s}' % letter # To get input in {letter}{letter} format
+	card = Cards.query.filter_by(manaCost = formated_mana_cost).all()
+	for number in range(len(card)):
+		cardnames.append(card[number].name)
+	return json.dumps(dict(names = cardnames))
+# --------------------------------------------------------------
+
+# SHOWING CARDS BY RARITY
+
+@app.route('/rarity')
+def show_card_by_rarity():
+	
+	user_input = request.get_json()
+	rarity = user_input['rarity']
+	card = Cards.query.filter_by(rarity = rarity).all()
+	cardnames = []
+	for number in range(len(card)):
+		cardnames.append(card[number].name)
+	return json.dumps(dict(names = cardnames))
 # --------------------------------------------------------------
 
 # DELETING CARDS
 
-@app.route('/delete/<name>', methods = ['DELETE'])
-def delete_card(name):
+# @app.route('/delete/<name>', methods = ['DELETE'])
+# def delete_card_by_name(name):
 
-	card = Cards.query.filter_by(name = name).first()
-	db.session.delete(card)
-	db.session.commit()
-	return '%s deleted' % name
+# 	card = Cards.query.filter_by(name = name).first()
+# 	db.session.delete(card)
+# 	db.session.commit()
+# 	return '%s deleted' % name
 
 # --------------------------------------------------------------
 # TABLE USERS ROUTES
@@ -70,25 +145,74 @@ def add_user():
 
 # ADDING CARDS TO A SPECIFIC USER
 
-@app.route('/addcard/<username>', methods = ['POST'])
+@app.route('/add/<username>', methods = ['POST'])
 def add_card_to_user(username):
 
 	user_input = request.get_json()
 	card_name = user_input['name']
 	user = Users.query.filter_by(username = username).first()
-	card = Cards.query.filter_by(name = card_name).first()
-	card.owner.append(user)
-	db.session.commit()
-	return '%s added to %s' %(card_name,username)
+	for number in range(len(card_name)):
+		card = Cards.query.filter_by(name = card_name[number]).first()
+		card.owner.append(user)
+		db.session.commit()
+	return json.dumps(dict(names = card_name)) + 'added to %s' % user.username
 # --------------------------------------------------------------
 
 # SHOWING USER CARDS
 
 @app.route('/cards/<username>')
 def show_user_cards(username):
+	cardsnames = []
+	user = Users.query.filter_by(username = username).first()
+	for card in user.mycards:
+		cardsnames.append(card.name)
+	return json.dumps(dict(name = cardsnames))
+# --------------------------------------------------------------
 
-	user = Users.query.filter_by(username = username).first
-	for cards in user.mycards:
-		print cards.name
-	return 'ok'
+# SHOWING CARDS BY ARTIST
+
+@app.route('/artist/<username>')
+def show_user_card_by_artist(username):
+
+	user_input = request.get_json()
+	artist = user_input['artist']
+	user = Users.query.filter_by(username = username).first()
+	cardnames = []
+	for card in user.mycards:
+		if card.artist == artist:
+			cardnames.append(card.name)
+	return json.dumps(dict(names = cardnames))
+# --------------------------------------------------------------
+
+# SHOWING CARDS BY MANACOST
+
+@app.route('/manacost/<username>')
+def show_user_card_by_manacost(username):
+
+	user_input = request.get_json()
+	manacost = user_input['manacost']
+	formated_mana_cost = ''
+	cardnames = []
+	for each in manacost:
+		formated_mana_cost += '{%s}' % each # To get input in {letter}{letter} format
+	user = Users.query.filter_by(username = username).first()
+	for card in user.mycards:
+		if card.manaCost == formated_mana_cost:
+			cardnames.append(card.name)
+	return json.dumps(dict(names = cardnames))
+# --------------------------------------------------------------
+
+# SHOWING CARDS BY RARITY
+
+@app.route('/rarity/<username>')
+def show_card_user_by_rarity(username):
+	
+	user_input = request.get_json()
+	rarity = user_input['rarity']
+	user = Users.query.filter_by(username = username).first()
+	cardnames = []
+	for card in user.mycards:
+		if card.rarity == rarity:
+			cardnames.append(card.name)
+	return json.dumps(dict(names = cardnames))
 # --------------------------------------------------------------
