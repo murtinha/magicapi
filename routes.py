@@ -7,14 +7,19 @@ from flask import request, json
 
 @app.route('/health-check')
 def health_check():
-
 	return 'It lives!!!'
+
+
+@app.route('/data')
+def data_request():
+	print data['Sen Triplets']
+	return 'printed'
 
 # --------------------------------------------------------------------
 # TABLE CARDS ROUTES
 # --------------------------------------------------------------
 
-# ADDING CARDS
+# ADDING CARDS TO CARDS-DB
 
 @app.route('/add', methods = ['POST'])
 def add_cards():
@@ -22,7 +27,6 @@ def add_cards():
 	card_manaCost = ''
 	card_colors = []
 	card_types = []
-	card_rarity = ''
 	card_text = ''
 	card_artist = ''
 	for card in data.values():
@@ -34,15 +38,13 @@ def add_cards():
 			card_colors = card['colors']
 		if 'types' in card:
 			card_types = card['types']
-		if 'rarity' in card:
-			card_rarity = card['rarity']
 		if 'text' in card:
 			card_text = card['text']
 		if 'artist' in card:
 			card_artist = card['artist']
   		dbcreate = Cards(card_name,card_manaCost,
 	  		             str(card_colors),str(card_types),
-	  		             card_rarity,card_text,card_artist)
+	  		             card_text,card_artist)
 	  	db.session.add(dbcreate)
 	 	db.session.commit()
 	return 'added'
@@ -108,7 +110,7 @@ def show_card_by_artist():
 def show_card_by_manacost():
 
 	user_input = request.get_json()
-	manacost = user_input['manacost']
+	manacost = user_input['manaCost']
 	formated_mana_cost = ''
 	cardnames = []
 	for letter in manacost:
@@ -210,7 +212,7 @@ def show_user_card_by_artist(username):
 def show_user_card_by_manacost(username):
 
 	user_input = request.get_json()
-	manacost = user_input['manacost']
+	manacost = user_input['manaCost']
 	formated_mana_cost = ''
 	cardnames = []
 	for each in manacost:
