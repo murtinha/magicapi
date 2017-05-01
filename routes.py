@@ -165,6 +165,26 @@ def show_card_by_mana_color():
 		if card.colors == str(sorted(colors)):
 			cardnames.append(card.name)
 	return json.dumps(dict(names = cardnames))
+# --------------------------------------------------------------
+
+# SHOWING CARDS BY TEXT
+
+@app.route('/text')
+def show_card_by_text():
+
+	user_input = request.get_json()
+	text = user_input['text']
+	cards = Cards.query.all()
+	card_list = []
+	for card in cards:
+		if text in card.text:
+			card_list.append(card.name)
+	print len(card_list)
+	return json.dumps(dict(names = card_list))
+
+
+
+# --------------------------------------------------------------
 
 # --------------------------------------------------------------
 # TABLE USERS ROUTES
