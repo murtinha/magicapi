@@ -326,6 +326,26 @@ def show_user_card_by_text(username):
 	return json.dumps(dict(names = card_list))
 # --------------------------------------------------------------
 
+# SHOWING CARDS BY MANACOST AND COLOR
+
+@app.route('/manacolor/<username>')
+def show_user_card_by_mana_color(username):
+
+	user_input = request.get_json()
+	manacost = user_input['manaCost']
+	formated_manacost = ''
+	cardnames = []
+	for eachletter in manacost:
+		formated_manacost += '{%s}' % eachletter # To get input in {letter}{letter} format
+	colors = user_input['colors']
+	user = Users.query.filter_by(username = username).first()
+	for eachcard in user.mycards:		
+		if eachcard.manaCost == formated_manacost:
+			if eachcard.colors == str(sorted(colors)):
+				cardnames.append(eachcard.name)
+	return json.dumps(dict(names = cardnames))
+# --------------------------------------------------------------
+
 # DELETING USER
 
 @app.route('/delete/<username>', methods = ['DELETE'])
