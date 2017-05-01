@@ -3,8 +3,6 @@ from loadjsoncards import data
 from tables import Cards, Users
 from flask import request, json
 
-
-
 # --------------------------------------------------------------
 
 # THIS ROUTE IS ONLY FOR INCREMENTING DB WITH CARD FROM JSONFILE
@@ -12,32 +10,33 @@ from flask import request, json
 
 # @app.route('/add', methods = ['POST'])
 # def add_cards():
-# 	card_name =''
-# 	card_manaCost = ''
-# 	card_colors = []
-# 	card_types = []
-# 	card_text = ''
-# 	card_artist = ''
-# 	for card in data.values():
-# 		if 'name' in card:
-# 			card_name = card['name']
-# 		if 'manaCost' in card:
-# 			card_manaCost = card['manaCost']
-# 		if 'colors' in card:
-# 			card_colors = card['colors']
-# 		if 'types' in card:
-# 			card_types = card['types']
-# 		if 'text' in card:
-# 			card_text = card['text']
-# 		if 'artist' in card:
-# 			card_artist = card['artist']
-#   		dbcreate = Cards(card_name,card_manaCost,
-# 	  		             str(card_colors),str(card_types),
-# 	  		             card_text,card_artist)
-# 	  	db.session.add(dbcreate)
-# 	 	db.session.commit()
-# 	return 'added'
+#  	card_name =''
+#  	card_manaCost = ''
+#  	card_colors = []
+#  	card_types = []
+#  	card_text = ''
+#  	card_artist = ''
+#  	for card in data.values():
+#  		if 'name' in card:
+#  			card_name = card['name']
+#  		if 'manaCost' in card:
+#  			card_manaCost = card['manaCost']
+#  		if 'colors' in card:
+#  			card_colors = card['colors']
+#  		if 'types' in card:
+#  			card_types = card['types']
+#  		if 'text' in card:
+#  			card_text = card['text']
+#  		if 'artist' in card:
+#  			card_artist = card['artist']
+#    		dbcreate = Cards(card_name,card_manaCost,
+#  	  		             str(sorted(card_colors)),str(sorted(card_types)),
+#  	  		             card_text,card_artist)
+#  	  	db.session.add(dbcreate)
+#  	 	db.session.commit()
+#  	return 'added'
 # --------------------------------------------------------------
+
 
 
 
@@ -64,9 +63,12 @@ def health_check():
 def show_card_by_name():
 
 	user_input = request.get_json()
-	name = user_input['name']
-	card = Cards.query.filter_by(name = name).first()
-	return str(card)
+	names = user_input['name']
+	card_list = []
+	for name in names:
+		cards = Cards.query.filter_by(name = name).first()
+		card_list.append(cards)
+	return str(card_list)
 # --------------------------------------------------------------
 
 # SHOWING CARDS BY COLOR
@@ -119,13 +121,32 @@ def show_card_by_manacost():
 
 	user_input = request.get_json()
 	manacost = user_input['manaCost']
-	formated_mana_cost = ''
+	formated_manacost = ''
 	cardnames = []
 	for letter in manacost:
-		formated_mana_cost += '{%s}' % letter # To get input in {letter}{letter} format
-	card = Cards.query.filter_by(manaCost = formated_mana_cost).all()
+		formated_manacost += '{%s}' % letter # To get input in {letter}{letter} format
+	card = Cards.query.filter_by(manaCost = formated_manacost).all()
 	for number in range(len(card)):
 		cardnames.append(card[number].name)
+	return json.dumps(dict(names = cardnames))
+# --------------------------------------------------------------
+
+# SHOWING CARDS BY MANACOST AND COLOR
+
+@app.route('/manacolor')
+def show_card_by_mana_color():
+
+	user_input = request.get_json()
+	manacost = user_input['manaCost']
+	formated_manacost = ''
+	cardnames = []
+	for letter in manacost:
+		formated_manacost += '{%s}' % letter # To get input in {letter}{letter} format
+	colors = user_input['colors']
+	card_from_manacost = Cards.query.filter_by( manaCost = formated_manacost).all()
+	for card in card_from_manacost:
+		if card.colors == str(sorted(colors)):
+			cardnames.append(card.name)
 	return json.dumps(dict(names = cardnames))
 
 # --------------------------------------------------------------
