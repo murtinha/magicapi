@@ -141,6 +141,7 @@ def show_card_by_types():
 		for each in types:
 			if each in card.types:
 				card_list.append(card.name)
+	print len(card_list)
 	return json.dumps(dict(names = card_list))
 
 
@@ -272,6 +273,23 @@ def show_user_card_colors(username):
 	for card in user.mycards:
 		if card.colors == colors:
 			card_list.append(card.name)
+	return json.dumps(dict(names = card_list))
+
+# --------------------------------------------------------------
+
+# SHOWING CARDS BY TYPES
+
+@app.route('/types/<username>')
+def show_user_card_by_types(username):
+
+	user_input = request.get_json()
+	types = user_input['types']
+	user = Users.query.filter_by(username = username).first()
+	card_list = []
+	for card in user.mycards:
+		for each in types:
+			if each in card.types:
+				card_list.append(card.name)
 	return json.dumps(dict(names = card_list))
 # --------------------------------------------------------------
 
