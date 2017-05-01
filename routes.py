@@ -48,7 +48,6 @@ from flask import request, json
 
 
 
-
 # HEALTH-CHECK
 
 @app.route('/health-check')
@@ -207,3 +206,18 @@ def show_user_card_by_manacost(username):
 			cardnames.append(card.name)
 	return json.dumps(dict(names = cardnames))
 # --------------------------------------------------------------
+
+# SHOWING CARDS BY NAME
+
+@app.route('/name/<username>')
+def show_user_card_by_name(username):
+
+	user_input = request.get_json()
+	name = user_input['name']
+	card_list = []
+	user = Users.query.filter_by(username = username).first()
+	for each in name:
+		for card in user.mycards:
+			if card.name == each:
+				card_list.append(card)
+	return str(card_list)
