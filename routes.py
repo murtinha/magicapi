@@ -177,13 +177,10 @@ def show_card_by_text():
 	cards = Cards.query.all()
 	card_list = []
 	for card in cards:
-		if text in card.text:
-			card_list.append(card.name)
-	print len(card_list)
+		for word in text:
+			if word in card.text:
+				card_list.append(card.name)
 	return json.dumps(dict(names = card_list))
-
-
-
 # --------------------------------------------------------------
 
 # --------------------------------------------------------------
@@ -309,6 +306,22 @@ def show_user_card_by_types(username):
 	for card in user.mycards:
 		for each in types:
 			if each in card.types:
+				card_list.append(card.name)
+	return json.dumps(dict(names = card_list))
+# --------------------------------------------------------------
+
+# SHOWING CARDS BY TEXT
+
+@app.route('/text/<username>')
+def show_user_card_by_text(username):
+
+	user_input = request.get_json()
+	text = user_input['text']
+	user = Users.query.filter_by(username = username).first()
+	card_list = []
+	for card in user.mycards:
+		for word in text:
+			if word in card.text:
 				card_list.append(card.name)
 	return json.dumps(dict(names = card_list))
 # --------------------------------------------------------------
