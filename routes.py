@@ -44,9 +44,6 @@ from flask import request, json
 
 
 
-
-
-
 # HEALTH-CHECK
 
 @app.route('/health-check')
@@ -73,17 +70,17 @@ def show_card_by_name():
 
 # SHOWING CARDS BY COLOR
 
-# @app.route('/colors')
-# def show_card_colors():
+@app.route('/colors')
+def show_card_colors():
 
-#  	user_input = request.get_json()
-#  	print user_input['colors'][0]
-#  	return 'ok'
-#   card = Cards.query.filter_by(colors = colors).all()
-#   cardnames = []
-#   for number in range(len(card)):
-# 	cardnames.append(card[number].name)
-#   return json.dumps(dict(names = cardnames))
+  	user_input = request.get_json()
+  	colors = sorted(user_input['colors'])
+  	card_list = []
+  	cards = Cards.query.filter_by(colors = str(colors)).all()
+	for card in cards:
+		card_list.append(card.name)
+	print len(card_list)
+	return json.dumps(dict(names = card_list))
 # --------------------------------------------------------------
 
 # SHOW CARD USERS
@@ -130,6 +127,25 @@ def show_card_by_manacost():
 		cardnames.append(card[number].name)
 	return json.dumps(dict(names = cardnames))
 # --------------------------------------------------------------
+
+# SHOWING CARDS BY TYPES
+
+@app.route('/types')
+def show_card_by_types():
+
+	user_input = request.get_json()
+	types = user_input['types']
+	cards = Cards.query.all()
+	card_list = []
+	for card in cards:
+		for each in types:
+			if each in card.types:
+				card_list.append(card.name)
+	return json.dumps(dict(names = card_list))
+
+
+# --------------------------------------------------------------
+
 
 # SHOWING CARDS BY MANACOST AND COLOR
 
@@ -242,3 +258,30 @@ def show_user_card_by_name(username):
 			if card.name == each:
 				card_list.append(card)
 	return str(card_list)
+# --------------------------------------------------------------
+
+# SHOWING CARDS BY COLOR
+
+@app.route('/colors/<username>')
+def show_user_card_colors(username):
+
+  	user_input = request.get_json()
+  	colors = sorted(user_input['colors'])
+  	card_list = []
+  	user = User.query.filter_by(user = username).first()
+	for card in user.mycards:
+		if card.colors == colors:
+			card_list.append(card.name)
+	return json.dumps(dict(names = card_list))
+# --------------------------------------------------------------
+
+# DELETING USER
+
+@app.route('/delete/<username>', methods = ['DELETE'])
+def delete_user(username):
+
+	user = Users.query.filter_by(username = username).first()
+	user_id = user.user_id
+	db.session.delete(user)
+	db.session.commit()
+	return 'User with id = %d' % user_id

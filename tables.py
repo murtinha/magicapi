@@ -62,6 +62,10 @@ class Users(db.Model):
 		# self.cards = cards_id
 		# self.clan = clan
 
+	def __repr__(self):
+
+		return json.dumps(dict(username = self.username,
+							   email = self.email))
 
 
 
