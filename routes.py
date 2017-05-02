@@ -8,33 +8,34 @@ from flask import request, json
 # THIS ROUTE IS ONLY FOR INCREMENTING DB WITH CARD FROM JSONFILE
 # DB IS ALREADY INCREMENTED
 
-@app.route('/add', methods = ['POST'])
-def add_cards():
- 	card_name =''
- 	card_manaCost = ''
- 	card_colors = []
- 	card_types = []
- 	card_text = ''
- 	card_subtypes = ''
- 	for card in data.values():
- 		if 'name' in card:
- 			card_name = card['name']
- 		if 'manaCost' in card:
- 			card_manaCost = card['manaCost']
- 		if 'colors' in card:
- 			card_colors = card['colors']
- 		if 'types' in card:
- 			card_types = card['types']
- 		if 'text' in card:
- 			card_text = card['text']
- 		if 'subtypes' in card:
- 			card_subtypes = card['subtypes']
-   		dbcreate = Cards(card_name,card_manaCost,
- 	  		             str(sorted(card_colors)),str(sorted(card_types)),
- 	  		             str(sorted(card_subtypes)),card_text)
- 	  	db.session.add(dbcreate)
- 	 	db.session.commit()
- 	return 'added'
+# @app.route('/add', methods = ['POST'])
+# def add_cards():
+ 	
+#  	for card in data.values():
+#  		card_name =''
+#  		card_manaCost = ''
+#  		card_colors = []
+#  		card_types = []
+#  		card_text = ''
+#  		card_subtypes = ''
+#  		if 'name' in card:
+#  			card_name = card['name']
+#  		if 'manaCost' in card:
+#  			card_manaCost = card['manaCost']
+#  		if 'colors' in card:
+#  			card_colors = card['colors']
+#  		if 'types' in card:
+#  			card_types = card['types']
+#  		if 'text' in card:
+#  			card_text = card['text']
+#  		if 'subtypes' in card:
+#  			card_subtypes = card['subtypes']
+#    		dbcreate = Cards(card_name,card_manaCost,
+#  	  		             str(sorted(card_colors)),str(sorted(card_types)),
+#  	  		             str(sorted(card_subtypes)),card_text)
+#  	  	db.session.add(dbcreate)
+#  	 	db.session.commit()
+#  	return 'added'
 # --------------------------------------------------------------
 
 
@@ -48,6 +49,7 @@ def add_cards():
 
 @app.route('/health-check')
 def health_check():
+	subtypes = ''
 	return 'It lives!!!'
 
 # --------------------------------------------------------------------
@@ -103,13 +105,19 @@ def show_card_users():
 def show_card_by_subtypes():
 
 	user_input = request.get_json()
-	subtypes = sorted(user_input['subtypes'])
+	if len(user_input) > 1:
+		subtypes = sorted(user_input['subtypes'])
+	else:
+		subtypes = user_input['subtypes']
+	print subtypes
 	cards = Cards.query.all()
 	cardnames = []
 	for card in cards:
-		if card.subtypes == str(subtypes):
-			cardnames.append(card.name)
+		if card.subtypes != '':
+	 		if str(subtypes) in card.subtypes:
+	 			cardnames.append(card.name)
 	return json.dumps(dict(names = cardnames))
+	
 # --------------------------------------------------------------
 
 # SHOWING CARDS BY SUBTYPES,COLOR,TEXT
