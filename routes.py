@@ -109,12 +109,18 @@ def show_card_by_subtypes():
 		subtypes = sorted(user_input['subtypes'])
 	else:
 		subtypes = user_input['subtypes']
-	print subtypes
 	cards = Cards.query.all()
 	cardnames = []
+	card_filter= 0 # Guarantee that all subtypes are in the card at once
 	for card in cards:
 		if card.subtypes != '':
-	 		if str(subtypes) in card.subtypes:
+			for subtype in subtypes:
+	 			if str(subtype )in card.subtypes: 
+	 				card_filter = 1
+	 			else:
+	 				card_filter = 0
+	 				break
+	 		if card_filter == 1:
 	 			cardnames.append(card.name)
 	return json.dumps(dict(names = cardnames))
 	
@@ -163,11 +169,16 @@ def show_card_by_types():
 	types = user_input['types']
 	cards = Cards.query.all()
 	card_list = []
+	append_alert = 0 # Guarantee that all types are in the card at once
 	for card in cards:
 		for each in types:
-			if each in card.types:
-				card_list.append(card.name)
-	print len(card_list)
+			if str(each) in card.types:
+				append_alert = 1
+			else:
+				append_alert = 0
+				break
+		if append_alert == 1:
+			card_list.append(card.names)
 	return json.dumps(dict(names = card_list))
 
 
