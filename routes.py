@@ -433,7 +433,7 @@ def show_user_card_by_mana_color(username):
 # SHOWING CARDS BY SUBTYPES,COLOR,TEXT
 
 @app.route('/subtypes/colors/text/<username>')
-def show_user_card_by_sub_color_text():
+def show_user_card_by_sub_color_text(username):
 
 	user_input = request.get_json()
 	subtypes = user_input['subtypes']
