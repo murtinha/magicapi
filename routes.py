@@ -63,11 +63,11 @@ def show_card_by_name():
 
 	user_input = request.get_json()
 	names = user_input['name']
-	card_list = []
+	cardnames = []
 	for name in names:
 		cards = Cards.query.filter_by(name = name).first()
-		card_list.append(cards)
-	return str(card_list)
+		cardnames.append(cards)
+	return str(cardnames)
 # --------------------------------------------------------------
 
 # SHOWING CARDS BY COLOR
@@ -77,12 +77,12 @@ def show_card_colors():
 
   	user_input = request.get_json()
   	colors = sorted(user_input['colors'])
-  	card_list = []
+  	cardnames = []
   	cards = Cards.query.filter_by(colors = str(colors)).all()
 	for card in cards:
-		card_list.append(card.name)
-	print len(card_list)
-	return json.dumps(dict(names = card_list))
+		cardnames.append(card.name)
+	print len(cardnames)
+	return json.dumps(dict(names = cardnames))
 # --------------------------------------------------------------
 
 # SHOW CARD USERS
@@ -97,6 +97,22 @@ def show_card_users():
 	for user in users.owner:
 		usernames.append(user.username)
 	return json.dumps(dict(usernames = usernames))
+# --------------------------------------------------------------
+
+# SHOWING CARDS BY TEXT
+
+@app.route('/text')
+def show_card_by_text():
+
+	user_input = request.get_json()
+	text = user_input['text']
+	cards = Cards.query.all()
+	cardnames = []
+	for card in cards:
+		for word in text:
+			if word in card.text.lower():
+				cardnames.append(card.name)
+	return json.dumps(dict(names = cardnames))
 # --------------------------------------------------------------
 
 # SHOWING CARDS BY SUBTYPES
@@ -115,7 +131,7 @@ def show_card_by_subtypes():
 	for card in cards:
 		if card.subtypes != '':
 			for subtype in subtypes:
-	 			if str(subtype )in card.subtypes: 
+	 			if subtype in card.subtypes: 
 	 				card_filter = 1
 	 			else:
 	 				card_filter = 0
@@ -128,17 +144,28 @@ def show_card_by_subtypes():
 
 # SHOWING CARDS BY SUBTYPES,COLOR,TEXT
 
-# @app.route('/subtypes/colors/text')
-# def show_card_by_sub_color_text():
+@app.route('/subtypes/colors/text')
+def show_card_by_sub_color_text():
 
-# 	user_input = request.get_json()
-# 	subtypes = user_input['subtypes']
-# 	colors = user_input['colors']
-# 	text = user_input['text']
-# 	card_color = Cards.query.filter_by(colors = str(colors)).all()
-# 	for card in card_color:
-# 		for subtype in subtypes:
-# 			if subtype in card.
+	user_input = request.get_json()
+	subtypes = user_input['subtypes']
+	colors = user_input['colors']
+	text = user_input['text']
+	card_color = Cards.query.filter_by(colors = str(colors)).all()
+	card_filter = 0
+	cardnames = []
+	for card in card_color:
+		for subtype in subtypes:
+			if str(subtype) in card.subtypes:
+				card_filter = 1
+			else:
+				card_filter = 0
+				break
+		if card_filter == 1:
+			for word in text:
+				if word in card.text.lower():
+					cardnames.append(card.name)
+	return json.dumps(dict(names = cardnames))
 
 
 # --------------------------------------------------------------
@@ -168,18 +195,18 @@ def show_card_by_types():
 	user_input = request.get_json()
 	types = user_input['types']
 	cards = Cards.query.all()
-	card_list = []
+	cardnames = []
 	append_alert = 0 # Guarantee that all types are in the card at once
 	for card in cards:
 		for each in types:
-			if str(each) in card.types:
+			if each in card.types:
 				append_alert = 1
 			else:
 				append_alert = 0
 				break
 		if append_alert == 1:
-			card_list.append(card.names)
-	return json.dumps(dict(names = card_list))
+			cardnames.append(card.name)
+	return json.dumps(dict(names = cardnames))
 
 
 # --------------------------------------------------------------
@@ -204,21 +231,6 @@ def show_card_by_mana_color():
 	return json.dumps(dict(names = cardnames))
 # --------------------------------------------------------------
 
-# SHOWING CARDS BY TEXT
-
-@app.route('/text')
-def show_card_by_text():
-
-	user_input = request.get_json()
-	text = user_input['text']
-	cards = Cards.query.all()
-	card_list = []
-	for card in cards:
-		for word in text:
-			if word in card.text:
-				card_list.append(card.name)
-	return json.dumps(dict(names = card_list))
-# --------------------------------------------------------------
 
 # --------------------------------------------------------------
 # TABLE USERS ROUTES
@@ -306,13 +318,13 @@ def show_user_card_by_name(username):
 
 	user_input = request.get_json()
 	name = user_input['name']
-	card_list = []
+	cardnames = []
 	user = Users.query.filter_by(username = username).first()
 	for each in name:
 		for card in user.mycards:
 			if card.name == each:
-				card_list.append(card)
-	return str(card_list)
+				cardnames.append(card)
+	return str(cardnames)
 # --------------------------------------------------------------
 
 # SHOWING CARDS BY COLOR
@@ -322,12 +334,12 @@ def show_user_card_colors(username):
 
   	user_input = request.get_json()
   	colors = sorted(user_input['colors'])
-  	card_list = []
+  	cardnames = []
   	user = User.query.filter_by(user = username).first()
 	for card in user.mycards:
 		if card.colors == colors:
-			card_list.append(card.name)
-	return json.dumps(dict(names = card_list))
+			cardnames.append(card.name)
+	return json.dumps(dict(names = cardnames))
 
 # --------------------------------------------------------------
 
@@ -339,12 +351,12 @@ def show_user_card_by_types(username):
 	user_input = request.get_json()
 	types = user_input['types']
 	user = Users.query.filter_by(username = username).first()
-	card_list = []
+	cardnames = []
 	for card in user.mycards:
 		for each in types:
 			if each in card.types:
-				card_list.append(card.name)
-	return json.dumps(dict(names = card_list))
+				cardnames.append(card.name)
+	return json.dumps(dict(names = cardnames))
 # --------------------------------------------------------------
 
 # SHOWING CARDS BY TEXT
@@ -355,12 +367,12 @@ def show_user_card_by_text(username):
 	user_input = request.get_json()
 	text = user_input['text']
 	user = Users.query.filter_by(username = username).first()
-	card_list = []
+	cardnames = []
 	for card in user.mycards:
 		for word in text:
 			if word in card.text:
-				card_list.append(card.name)
-	return json.dumps(dict(names = card_list))
+				cardnames.append(card.name)
+	return json.dumps(dict(names = cardnames))
 # --------------------------------------------------------------
 
 # SHOWING CARDS BY MANACOST AND COLOR
