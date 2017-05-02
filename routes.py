@@ -108,10 +108,16 @@ def show_card_by_text():
 	text = user_input['text']
 	cards = Cards.query.all()
 	cardnames = []
+	card_filter = 0
 	for card in cards:
 		for word in text:
 			if word in card.text.lower():
-				cardnames.append(card.name)
+				card_filter = 1
+			else:
+				card_filter = 0
+				break
+		if card_filter == 1:
+			cardnames.append(card.name)
 	return json.dumps(dict(names = cardnames))
 # --------------------------------------------------------------
 
@@ -149,22 +155,28 @@ def show_card_by_sub_color_text():
 
 	user_input = request.get_json()
 	subtypes = user_input['subtypes']
-	colors = user_input['colors']
+	colors = sorted(user_input['colors'])
 	text = user_input['text']
 	card_color = Cards.query.filter_by(colors = str(colors)).all()
-	card_filter = 0
+	card_filter_subtype = 0
+	card_filter_text = 0 
 	cardnames = []
 	for card in card_color:
 		for subtype in subtypes:
 			if str(subtype) in card.subtypes:
-				card_filter = 1
+				card_filter_subtype = 1
 			else:
-				card_filter = 0
+				card_filter_subtype = 0
 				break
-		if card_filter == 1:
+		if card_filter_subtype == 1:
 			for word in text:
 				if word in card.text.lower():
-					cardnames.append(card.name)
+					card_filter_text = 1
+				else:
+					card_filter_text = 0
+					break
+			if card_filter_text == 1:
+				cardnames.append(card.name)
 	return json.dumps(dict(names = cardnames))
 
 
@@ -278,21 +290,6 @@ def show_user_cards(username):
 	return json.dumps(dict(name = cardsnames))
 # --------------------------------------------------------------
 
-# SHOWING CARDS BY ARTIST
-
-@app.route('/artist/<username>')
-def show_user_card_by_artist(username):
-
-	user_input = request.get_json()
-	artist = user_input['artist']
-	user = Users.query.filter_by(username = username).first()
-	cardnames = []
-	for card in user.mycards:
-		if card.artist == artist:
-			cardnames.append(card.name)
-	return json.dumps(dict(names = cardnames))
-# --------------------------------------------------------------
-
 # SHOWING CARDS BY MANACOST
 
 @app.route('/manacost/<username>')
@@ -337,7 +334,7 @@ def show_user_card_colors(username):
   	cardnames = []
   	user = User.query.filter_by(user = username).first()
 	for card in user.mycards:
-		if card.colors == colors:
+		if card.colors == str(colors):
 			cardnames.append(card.name)
 	return json.dumps(dict(names = cardnames))
 
@@ -352,10 +349,16 @@ def show_user_card_by_types(username):
 	types = user_input['types']
 	user = Users.query.filter_by(username = username).first()
 	cardnames = []
+	card_filter = 0
 	for card in user.mycards:
 		for each in types:
 			if each in card.types:
-				cardnames.append(card.name)
+				card_filter = 1
+			else:
+				card_filter = 0
+				break
+		if card_filter == 1:
+			cardnames.append(card.name)
 	return json.dumps(dict(names = cardnames))
 # --------------------------------------------------------------
 
@@ -368,10 +371,42 @@ def show_user_card_by_text(username):
 	text = user_input['text']
 	user = Users.query.filter_by(username = username).first()
 	cardnames = []
+	card_filter = 0
 	for card in user.mycards:
 		for word in text:
-			if word in card.text:
-				cardnames.append(card.name)
+			if word in card.text.lower():
+				card_filter = 1
+			else:
+				card_filter = 0
+				break
+		if card_filter == 1:
+			cardnames.append(card.name)
+	return json.dumps(dict(names = cardnames))
+# --------------------------------------------------------------
+
+# SHOWING CARDS BY SUBTYPES
+
+@app.route('/subtypes/<username>')
+def show_user_card_by_subtypes():
+
+	user_input = request.get_json()
+	if len(user_input) > 1:
+		subtypes = sorted(user_input['subtypes'])
+	else:
+		subtypes = user_input['subtypes']
+	user = Users.query.filter_by(username = username).first()
+	cardnames = []
+	card_filter= 0 # Guarantee that all subtypes are in the card at once
+	for card in user.mycards:
+		if card.subtypes != '':
+			for subtype in subtypes:
+	 			if subtype in card.subtypes: 
+	 				card_filter = 1
+	 			else:
+	 				card_filter = 0
+	 				break
+	 		if card_filter == 1:
+	 			cardnames.append(card.name)
 	return json.dumps(dict(names = cardnames))
 # --------------------------------------------------------------
 
@@ -392,6 +427,39 @@ def show_user_card_by_mana_color(username):
 		if eachcard.manaCost == formated_manacost:
 			if eachcard.colors == str(sorted(colors)):
 				cardnames.append(eachcard.name)
+	return json.dumps(dict(names = cardnames))
+# --------------------------------------------------------------
+
+# SHOWING CARDS BY SUBTYPES,COLOR,TEXT
+
+@app.route('/subtypes/colors/text/<username>')
+def show_user_card_by_sub_color_text():
+
+	user_input = request.get_json()
+	subtypes = user_input['subtypes']
+	colors = sorted(user_input['colors'])
+	text = user_input['text']
+	user = Users.query.filter_by(username = username).first()
+	card_filter_subtype = 0
+	card_filter_text = 0 
+	cardnames = []
+	for card in user.mycards:
+		if card.colors == str(colors):
+			for subtype in subtypes:
+				if str(subtype) in card.subtypes:
+					card_filter_subtype = 1
+				else:
+					card_filter_subtype = 0
+					break
+			if card_filter_subtype == 1:
+				for word in text:
+					if word in card.text.lower():
+						card_filter_text = 1
+					else:
+						card_filter_text = 0
+						break
+				if card_filter_text == 1:
+					cardnames.append(card.name)
 	return json.dumps(dict(names = cardnames))
 # --------------------------------------------------------------
 
