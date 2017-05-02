@@ -21,17 +21,17 @@ class Cards(db.Model):
 	colors = db.Column(db.String) # "["White", "Blue", "Black"]"
 	types = db.Column(db.String) # "["Artifact","Creature"]"
 	text = db.Column(db.String)
-	artist = db.Column(db.String)
+	subtypes = db.Column(db.String)
 	owners = db.relationship('Users', secondary = decks, backref = db.backref('mycards', lazy = 'dynamic'))
 
-	def __init__(self,name, manaCost, colors, types, text, artist):
+	def __init__(self,name, manaCost, colors, types, subtypes,text ):
 		
 		self.name = name
 		self.manaCost = manaCost
 		self.colors = colors
 		self.types = types
+		self.subtypes = subtypes
 		self.text = text
-		self.artist = artist
 
 	def __repr__(self):
 
@@ -40,8 +40,8 @@ class Cards(db.Model):
 							   manaCost = self.manaCost,
 							   colors = self.colors,
 							   types = self.types,
-							   text = self.text,
-							   artist = self.artist))
+							   subtypes = self.subtypes,
+							   text = self.text))
 
 # TABLE FOR USERS
 
@@ -52,15 +52,12 @@ class Users(db.Model):
 	username = db.Column(db.String, unique = True)
 	email = db.Column(db.String, unique = True)
 	user_cards = db.relationship('Cards', secondary = decks, backref = db.backref('owner', lazy = 'dynamic'))
-	# cards_id = db.Column(db.String, db.ForeignKey('cards.id'))
-	# clan = db.Column(db.Integer, db.ForeignKey('clans.id'))
+	clan = db.relationship('Clans', backref = db.backref('adepts'),uselist =  False)
 
 	def __init__(self,username,email):
 
 		self.username = username
 		self.email = email
-		# self.cards = cards_id
-		# self.clan = clan
 
 	def __repr__(self):
 
@@ -69,28 +66,17 @@ class Users(db.Model):
 
 
 
-
-
-
-
-
-
-
-		
-
 # TABLE FOR CLANS
 
-# class Clans(db.Model):
-# 	__tablename__ = 'clans'
+class Clans(db.Model):
+	__tablename__ = 'clans'
 
-# 	id = db.Column(db.String, primary_key = True)
-# 	name = db.Column(db.String, unique = True)
-# 	usernames = db.relationship('Users', backref = 'clans', lazy = 'dynamic')  
+ 	id = db.Column(db.String, primary_key = True)
+ 	clan_name = db.Column(db.String, unique = True)
+ 	adepts_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
+ 	def __init__(self,clan_name):
 
-# 	def __init__(self,name,usernames):
-
-# 		self.name = name
-# 		self.usernames = usernames
+ 		self.clan_name = clan_name
 
 
 # ONE CARD CAN HAVE MANY USERS
