@@ -8,3 +8,5 @@ routes.pyc
 /migrations/env.pyc
 /migrations/versions/48827d58a2e7_.pyc
 loadjsoncards.pyc
+migrate.pyc
+allsingletypes.pyc

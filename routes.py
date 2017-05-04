@@ -1,48 +1,6 @@
 from app import app,db
-from loadjsoncards import data
 from tables import Cards, Users
 from flask import request, json
-
-# --------------------------------------------------------------
-
-# THIS ROUTE IS ONLY FOR INCREMENTING DB WITH CARD FROM JSONFILE
-# DB IS ALREADY INCREMENTED
-
-# @app.route('/add', methods = ['POST'])
-# def add_cards():
- 	
-#  	for card in data.values():
-#  		card_name =''
-#  		card_manaCost = ''
-#  		card_colors = []
-#  		card_types = []
-#  		card_text = ''
-#  		card_subtypes = ''
-#  		if 'name' in card:
-#  			card_name = card['name']
-#  		if 'manaCost' in card:
-#  			card_manaCost = card['manaCost']
-#  		if 'colors' in card:
-#  			card_colors = card['colors']
-#  		if 'types' in card:
-#  			card_types = card['types']
-#  		if 'text' in card:
-#  			card_text = card['text']
-#  		if 'subtypes' in card:
-#  			card_subtypes = card['subtypes']
-#    		dbcreate = Cards(card_name,card_manaCost,
-#  	  		             str(sorted(card_colors)),str(sorted(card_types)),
-#  	  		             str(sorted(card_subtypes)),card_text)
-#  	  	db.session.add(dbcreate)
-#  	 	db.session.commit()
-#  	return 'added'
-# --------------------------------------------------------------
-
-
-
-
-
-
 
 
 # HEALTH-CHECK
@@ -285,7 +243,8 @@ def add_card_to_user(username):
 def show_user_cards(username):
 	cardsnames = []
 	user = Users.query.filter_by(username = username).first()
-	for card in user.mycards:
+	mycards = user.mycards
+	for card in mycards:
 		cardsnames.append(card.name)
 	return json.dumps(dict(name = cardsnames))
 # --------------------------------------------------------------
@@ -463,13 +422,34 @@ def show_user_card_by_sub_color_text(username):
 	return json.dumps(dict(names = cardnames))
 # --------------------------------------------------------------
 
-# DELETING USER
+# --------------------------------------------------------------
+# TABLE CLANS ROUTES
+# --------------------------------------------------------------
 
-@app.route('/delete/<username>', methods = ['DELETE'])
-def delete_user(username):
+# ADDING USER TO CLAN
 
-	user = Users.query.filter_by(username = username).first()
-	user_id = user.user_id
-	db.session.delete(user)
-	db.session.commit()
-	return 'User with id = %d' % user_id
+# @app.route('/addclan/<username>', methods = ['POST'])
+# def add_user_to_clan(username):
+
+# 	user_input = request.get_json()
+# 	userclan = user_input['clan']
+# 	user = Users.query.filter_by(username = username).first()
+# 	clan = Clans.query.filter_by(clan_name = userclan).first()
+# 	print type(clan)
+# 	db.session.commit()
+# 	return 'ok'
+
+
+
+# --------------------------------------------------------------
+
+# DELETING CLAN
+
+# @app.route('/delete', methods = ['DELETE'])
+# def delete_user():
+# 	user_input = request.get_json()
+# 	cid = user_input['id']
+# 	user = Clans.query.filter_by(clan_id = cid).first()
+# 	db.session.delete(user)
+# 	db.session.commit()
+# 	return 'deleted'
