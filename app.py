@@ -9,9 +9,7 @@ migrate = Migrate(app,db)
 
 from tables import Cards,Users
 import routes
-import migrate
-import loadjsoncards
-import allsingletypes
+
 
 # To initialize db, open python shell 
 #from application import db -> db.create_all()
