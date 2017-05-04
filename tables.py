@@ -40,6 +40,10 @@ class Colors(db.Model):
 
 		self.color = color
 
+	def __repr__(self):
+
+		return self.color
+
 class Types(db.Model):
 	__tablename__ = 'types'
 
@@ -51,6 +55,10 @@ class Types(db.Model):
 
 		self.types = types
 
+	def __repr__(self):
+
+		return self.types
+
 class Subtypes(db.Model):
 	__tablename__ = 'subtypes'
 
@@ -61,6 +69,10 @@ class Subtypes(db.Model):
 	def __init__(self, subtype):
 
 		self.subtype = subtype
+
+	def __repr__(self):
+
+		return self.subtype
 
 class Cards(db.Model):
 	__tablename__ = 'cards'

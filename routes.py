@@ -1,5 +1,5 @@
 from app import app,db
-from tables import Cards, Users
+from tables import Cards, Users, Colors, Types, Subtypes
 from flask import request, json
 
 
@@ -20,12 +20,21 @@ def health_check():
 def show_card_by_name():
 
 	user_input = request.get_json()
-	names = user_input['name']
-	cardnames = []
-	for name in names:
-		cards = Cards.query.filter_by(name = name).first()
-		cardnames.append(cards)
-	return str(cardnames)
+	name = user_input['name']
+	card = Cards.query.filter_by(name = name).first()
+	card_name = card.name
+	card_manacost = card.mana_cost
+	card_text = card.text
+	card_colors = card.colorsref
+	print card_colors
+	card_types = card.typesref
+	card_subtypes = card.subtypesref
+	return json.dumps(dict(name = card_name,
+						   mana_cost = card_manacost,
+						   colors = str(card_colors),
+						   types = str(card_types),
+						   subtypes = str(card_subtypes),
+						   text = card_text))
 # --------------------------------------------------------------
 
 # SHOWING CARDS BY COLOR
@@ -36,10 +45,10 @@ def show_card_colors():
   	user_input = request.get_json()
   	colors = sorted(user_input['colors'])
   	cardnames = []
-  	cards = Cards.query.filter_by(colors = str(colors)).all()
-	for card in cards:
-		cardnames.append(card.name)
-	print len(cardnames)
+	for color in colors:
+  		color_table_ref = Colors.query.filter_by(color = color).first()
+  		cards = color_table_ref.cardcolors
+
 	return json.dumps(dict(names = cardnames))
 # --------------------------------------------------------------
 
