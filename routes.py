@@ -384,26 +384,25 @@ def show_user_card_by_text(username):
 # SHOWING CARDS BY SUBTYPES
 
 @app.route('/subtypes/<username>')
-def show_user_card_by_subtypes():
+def show_user_card_by_subtypes(username):
 
 	user_input = request.get_json()
-	if len(user_input) > 1:
-		subtypes = sorted(user_input['subtypes'])
-	else:
-		subtypes = user_input['subtypes']
+	subtypes = user_input['subtypes']
 	user = Users.query.filter_by(username = username).first()
 	cardnames = []
-	card_filter= 0 # Guarantee that all subtypes are in the card at once
+	subtype_filter= 0 # Guarantee that all subtypes are in the card at once
 	for card in user.mycards:
-		if card.subtypes != '':
-			for subtype in subtypes:
-	 			if subtype in card.subtypes: 
-	 				card_filter = 1
-	 			else:
-	 				card_filter = 0
-	 				break
-	 		if card_filter == 1:
-	 			cardnames.append(card.name)
+		tostring = []
+		for subtype in card.subtypes:
+			tostring.append(str(subtype))
+		for subtype in subtypes:
+ 			if subtype in tostring: 
+ 				subtype_filter = 1
+ 			else:
+ 				subtype_filter = 0
+ 				break
+ 		if subtype_filter == 1:
+ 			cardnames.append(card.name)
 	return json.dumps(dict(names = cardnames))
 # --------------------------------------------------------------
 
@@ -413,7 +412,7 @@ def show_user_card_by_subtypes():
 def show_user_card_by_mana_color(username):
 
 	user_input = request.get_json()
-	manacost = user_input['manaCost']
+	manacost = user_input['mana_cost']
 	formated_manacost = ''
 	cardnames = []
 	for eachletter in manacost:
@@ -421,7 +420,7 @@ def show_user_card_by_mana_color(username):
 	colors = user_input['colors']
 	user = Users.query.filter_by(username = username).first()
 	for eachcard in user.mycards:		
-		if eachcard.manaCost == formated_manacost:
+		if eachcard.mana_cost == formated_manacost:
 			if eachcard.colors == str(sorted(colors)):
 				cardnames.append(eachcard.name)
 	return json.dumps(dict(names = cardnames))
@@ -437,18 +436,24 @@ def show_user_card_by_sub_color_text(username):
 	colors = sorted(user_input['colors'])
 	text = user_input['text']
 	user = Users.query.filter_by(username = username).first()
-	card_filter_subtype = 0
 	card_filter_text = 0 
 	cardnames = []
+	subtype_filter = 0
 	for card in user.mycards:
-		if card.colors == str(colors):
+		subtype_tostring = []
+		color_tostring = []
+		for subtype in card.subtypes:
+			subtype_tostring.append(str(subtype))
+		for color in card.colors:
+			color_tostring.append(str(color))
+		if sorted(color_tostring) == colors:
 			for subtype in subtypes:
-				if str(subtype) in card.subtypes:
-					card_filter_subtype = 1
+				if subtype in subtype_tostring:
+					subtype_filter = 1
 				else:
-					card_filter_subtype = 0
+					subtype_filter = 0
 					break
-			if card_filter_subtype == 1:
+			if subtype_filter == 1:
 				for word in text:
 					if word in card.text.lower():
 						card_filter_text = 1
