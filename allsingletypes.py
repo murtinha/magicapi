@@ -13,4 +13,5 @@ for subtype in subtypes:
 	subtypes_flatten += tuple(subtype)
 subtypes_flatten = list(set(subtypes_flatten))
 
+print subtypes_flatten
 

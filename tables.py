@@ -80,9 +80,9 @@ class Cards(db.Model):
 	card_id = db.Column(db.Integer, primary_key = True)
 	name = db.Column(db.String, unique = True)
 	mana_cost = db.Column(db.String)
-	colors = db.relationship('Colors', secondary = card_colors_relationship, backref = db.backref('cardcolors'))
-	types = db.relationship('Types', secondary = card_types_relationship, backref = db.backref('cardtypes'))
-	subtypes = db.relationship('Subtypes', secondary = card_subtypes_relationship, backref = db.backref('cardsubtypes'))
+	colors = db.relationship('Colors', secondary = card_colors_relationship, backref = db.backref('colorcards', lazy = 'dynamic'))
+	types = db.relationship('Types', secondary = card_types_relationship, backref = db.backref('typecards', lazy = 'dynamic'))
+	subtypes = db.relationship('Subtypes', secondary = card_subtypes_relationship, backref = db.backref('subtypescards', lazy = 'dynamic'))
 	text = db.Column(db.String)
 	owners = db.relationship('Users', secondary = card_decks_relationship, backref = db.backref('mycards', lazy = 'dynamic'))
 

@@ -25,15 +25,14 @@ def show_card_by_name():
 	card_name = card.name
 	card_manacost = card.mana_cost
 	card_text = card.text
-	card_colors = card.colorsref
-	print card_colors
-	card_types = card.typesref
-	card_subtypes = card.subtypesref
+	card_colors = str(card.colorsref)
+	card_types = str(card.typesref)
+	card_subtypes = str(card.subtypesref)
 	return json.dumps(dict(name = card_name,
 						   mana_cost = card_manacost,
-						   colors = str(card_colors),
-						   types = str(card_types),
-						   subtypes = str(card_subtypes),
+						   colors = card_colors,
+						   types = card_types,
+						   subtypes = card_subtypes,
 						   text = card_text))
 # --------------------------------------------------------------
 
@@ -45,10 +44,13 @@ def show_card_colors():
   	user_input = request.get_json()
   	colors = sorted(user_input['colors'])
   	cardnames = []
-	for color in colors:
-  		color_table_ref = Colors.query.filter_by(color = color).first()
-  		cards = color_table_ref.cardcolors
-
+	color_column = Colors.query.filter_by(color = colors[0]).first()
+	for card in color_column.colorcards:
+		tostring = []
+		for color in card.colors:
+			tostring.append(str(color))
+		if sorted(tostring) == colors:
+			cardnames.append(card.name)
 	return json.dumps(dict(names = cardnames))
 # --------------------------------------------------------------
 
