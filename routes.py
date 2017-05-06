@@ -277,14 +277,11 @@ def show_user_cards(username):
 def show_user_card_by_manacost(username):
 
 	user_input = request.get_json()
-	manacost = user_input['mana_cost']
-	formated_mana_cost = ''
+	manacost = str(sorted(user_input['mana_cost']))
 	cardnames = []
-	for each in manacost:
-		formated_mana_cost += '{%s}' % each # To get input in {letter}{letter} format
 	user = Users.query.filter_by(username = username).first()
 	for card in user.mycards:
-		if card.mana_cost == formated_mana_cost:
+		if card.mana_cost == manacost:
 			cardnames.append(card.name)
 	return json.dumps(dict(names = cardnames))
 # --------------------------------------------------------------
