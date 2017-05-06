@@ -2,7 +2,7 @@ from app import app,db
 from tables import Cards,Colors,Types,Subtypes
 from loadjsoncards import data
 from allsingletypes import types_flatten, subtypes_flatten
-
+import re
 # --------------------------------------------------------------
 
 # THIS ROUTE IS ONLY FOR POPULATING DB WITH CARD FROM JSONFILE
@@ -12,9 +12,12 @@ def add_cards():
  	
  	for card in data.values():
 		card_name = card.get('name', '')
-		card_manaCost = card.get('manaCost', '')
+		card_mana_cost = re.sub("\W", "",card.get('manaCost', ''))
+		card_mana_cost_split = []
+		for word in card_mana_cost:
+			card_mana_cost_split.append(word)
 		card_text = card.get('text', '')
-   		dbcreate = Cards(card_name,card_manaCost, 	  		             
+   		dbcreate = Cards(card_name,str(sorted((card_mana_cost_split))), 	  		             
  	  		             card_text)
  	  	db.session.add(dbcreate)
  	 	db.session.commit()

@@ -163,14 +163,13 @@ def show_card_by_sub_color_text():
 def show_card_by_manacost():
 
 	user_input = request.get_json()
-	manacost = user_input['mana_cost']
-	formated_manacost = ''
+	manacost = str(sorted(user_input['mana_cost']))
 	cardnames = []
-	for letter in manacost:
-		formated_manacost += '{%s}' % letter # To get input in {letter}{letter} format
-	card = Cards.query.filter_by(mana_cost = formated_manacost).all()
-	for number in range(len(card)):
-		cardnames.append(card[number].name)
+	cards = Cards.query.filter_by(mana_cost = manacost).all()
+	for card in cards:
+		print manacost,card.mana_cost
+		if card.mana_cost == manacost:
+			cardnames.append(card.mana_cost)
 	return json.dumps(dict(names = cardnames))
 # --------------------------------------------------------------
 
