@@ -508,6 +508,20 @@ def show_clan_users(clanname):
 	return json.dumps(dict(users = user_names))
 	return 'ok'
 
+# UPDATING USER CLAN
+
+@app.route('/clan/update/<username>', methods = ['PUT'])
+def update_clan_users(username):
+
+	user_input = request.get_json()
+	clan = user_input['clan']
+	user = Users.query.filter_by(username = username).first()
+	old_clan = Clans.query.filter_by(clan_id = user.my_clan).first()
+	old_clan_name = old_clan.clan_name 
+	new_clan = Clans.query.filter_by(clan_name = clan).first()
+	new_clan.clanusers.append(user)
+	db.session.commit()
+	return 'You changed from %s to %s' % (old_clan_name,clan)
 
 
 # DELETING CLAN
