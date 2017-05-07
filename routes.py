@@ -473,9 +473,13 @@ def add_user_to_clan(username):
 	user_input = request.get_json()
 	userclan = user_input['clan']
 	user = Users.query.filter_by(username = username).first()
-	clan = Clans.query.filter_by(clan_name = userclan).first()
-	clan.clanusers.append(user)
-	db.session.commit()
+	if user.my_clan == None:
+		clan = Clans.query.filter_by(clan_name = userclan).first()
+		clan.clanusers.append(user)
+		db.session.commit()
+	else:
+		my_clan = Clans.query.filter_by(clan_id = user.my_clan).first()
+		return 'You already have a clan (%s)!' % my_clan.clan_name
 	return 'Clan %s added to User %s' % (clan.clan_name, user.username)
 # --------------------------------------------------------------
 
