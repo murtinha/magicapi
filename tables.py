@@ -108,7 +108,8 @@ class Users(db.Model):
 	username = db.Column(db.String, unique = True)
 	email = db.Column(db.String, unique = True)
 	user_cards = db.relationship('Cards', secondary = card_decks_relationship, backref = db.backref('owner', lazy = 'dynamic'))
-	# clan = db.relationship('Clans', backref = db.backref('adepts'),uselist =  False)
+	clan_ref = db.relationship('Clans', backref = db.backref('clanusers', lazy = 'dynamic'))
+	my_clan = db.Column(db.Integer, db.ForeignKey('clans.clan_id'))
 
 	def __init__(self,username,email):
 		self.username = username
@@ -122,15 +123,18 @@ class Users(db.Model):
 
 # TABLE FOR CLANS
 
-# class Clans(db.Model):
-# 	__tablename__ = 'clans'
+class Clans(db.Model):
+	__tablename__ = 'clans'
 
-#  	clan_id = db.Column(db.Integer, primary_key = True)
-#  	clan_name = db.Column(db.String, unique = True)
-#  	adepts_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
+ 	clan_id = db.Column(db.Integer, primary_key = True)
+ 	clan_name = db.Column(db.String, unique = True)
+	
 
-#  	def __init__(self,clan_name):
-#  		self.clan_name = clan_name
+ 	def __init__(self,clan_name):
+ 		self.clan_name = clan_name
+
+ 	def __repr__(self):
+ 		return json.dumps(dict(clan = self.clan_name))
 
 
 # ONE CARD CAN HAVE MANY USERS

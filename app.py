@@ -7,7 +7,7 @@ app.config.from_object('config.BaseConfig')
 db = SQLAlchemy(app)
 migrate = Migrate(app,db)
 
-from tables import Cards,Users, Colors, Types, Subtypes
+from tables import Cards,Users, Colors, Types, Subtypes, Clans
 import routes
 import migrate
 

@@ -1,5 +1,5 @@
 from app import app,db
-from tables import Cards, Users, Colors, Types, Subtypes
+from tables import Cards, Users, Colors, Types, Subtypes, Clans
 from flask import request, json
 
 
@@ -467,20 +467,44 @@ def show_user_card_by_sub_color_text(username):
 
 # ADDING USER TO CLAN
 
-# @app.route('/addclan/<username>', methods = ['POST'])
-# def add_user_to_clan(username):
+@app.route('/addclan/<username>', methods = ['POST'])
+def add_user_to_clan(username):
 
-# 	user_input = request.get_json()
-# 	userclan = user_input['clan']
-# 	user = Users.query.filter_by(username = username).first()
-# 	clan = Clans.query.filter_by(clan_name = userclan).first()
-# 	print type(clan)
-# 	db.session.commit()
-# 	return 'ok'
-
-
-
+	user_input = request.get_json()
+	userclan = user_input['clan']
+	user = Users.query.filter_by(username = username).first()
+	clan = Clans.query.filter_by(clan_name = userclan).first()
+	clan.clanusers.append(user)
+	db.session.commit()
+	return 'Clan %s added to User %s' % (clan.clan_name, user.username)
 # --------------------------------------------------------------
+
+# SHOWING USER CLAN
+
+@app.route('/clan/<username>')
+def show_user_clan(username):
+
+	user = Users.query.filter_by(username = username).first()
+	clan_id = user.my_clan
+	clan = Clans.query.filter_by(clan_id = clan_id).first()
+
+	return 'Your clan is %s' % clan.clan_name
+
+# SHOWING CLAN USERS
+
+@app.route('/clan/users/<clanname>')
+def show_clan_users(clanname):
+
+	clan = Clans.query.filter_by(clan_name = clanname).first()
+	clan_id = clan.clan_id
+	users = Users.query.filter_by(my_clan = clan_id).all()
+	user_names = []
+	for user in users:
+		user_names.append(user.username)
+	return json.dumps(dict(users = user_names))
+	return 'ok'
+
+
 
 # DELETING CLAN
 
