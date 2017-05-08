@@ -7,7 +7,6 @@ from flask import request, json
 
 @app.route('/health-check')
 def health_check():
-	subtypes = ''
 	return 'It lives!!!'
 
 # --------------------------------------------------------------------
@@ -25,9 +24,9 @@ def show_card_by_name():
 	card_name = card.name
 	card_manacost = card.mana_cost
 	card_text = card.text
-	card_colors = str(card.colors)
-	card_types = str(card.typesref)
-	card_subtypes = str(card.subtypesref)
+	card_colors = str(card.colors_ref)
+	card_types = str(card.types_ref)
+	card_subtypes = str(card.subtypes_ref)
 	return json.dumps(dict(name = card_name,
 						   mana_cost = card_manacost,
 						   colors = card_colors,
@@ -298,9 +297,9 @@ def show_user_card_by_name(username):
 			card_name = card.name
 			card_manacost = card.mana_cost
 			card_text = card.text
-			card_colors = str(card.colors)
-			card_types = str(card.typesref)
-			card_subtypes = str(card.subtypesref)
+			card_colors = str(card.colors_ref)
+			card_types = str(card.types_ref)
+			card_subtypes = str(card.subtypes_ref)
 			break
 	return json.dumps(dict(name = card_name,
 						   mana_cost = card_manacost,
