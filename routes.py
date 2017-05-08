@@ -20,6 +20,7 @@ def show_card_by_name():
 
 	user_input = request.get_json()
 	name = user_input['name']
+	print name
 	card = Cards.query.filter_by(name = name).first()
 	card_name = card.name
 	card_manacost = card.mana_cost
@@ -46,7 +47,7 @@ def show_card_colors():
 	color_column = Colors.query.filter_by(color = colors[0]).first()
 	for card in color_column.colorcards:
 		tostring = []
-		for color in card.colors:
+		for color in card.colors_ref:
 			tostring.append(str(color))
 		if sorted(tostring) == colors:
 			cardnames.append(card.name)
@@ -101,7 +102,7 @@ def show_card_by_subtypes():
 	subtype_filter= 0 # Guarantee that all subtypes are in the card at once
 	for card in subtype_column.subtypescards:
 		tostring = []
-		for subtype in card.subtypes:
+		for subtype in card.subtypes_ref:
 			tostring.append(str(subtype))
 		for subtype in subtypes:
 			if subtype in tostring:
@@ -184,7 +185,7 @@ def show_card_by_types():
 	type_filter = 0
 	for card in type_column.typecards:
 		tostring = []
-		for type in card.types:
+		for type in card.types_ref:
 			tostring.append(str(type))
 		for type in types:
 			if type in tostring:
