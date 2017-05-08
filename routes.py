@@ -507,7 +507,6 @@ def show_clan_users(clanname):
 	for user in users:
 		user_names.append(user.username)
 	return json.dumps(dict(users = user_names))
-	return 'ok'
 # --------------------------------------------------------------
 
 # UPDATING USER CLAN
@@ -521,7 +520,7 @@ def update_clan_users(username):
 	old_clan = Clans.query.filter_by(clan_id = user.my_clan).first()
 	old_clan_name = old_clan.clan_name 
 	new_clan = Clans.query.filter_by(clan_name = clan).first()
-	new_clan.clanusers.append(user)
+	new_clan.user_ref.append(user)
 	db.session.commit()
 	return 'You changed from %s to %s' % (old_clan_name,clan)
 # --------------------------------------------------------------
