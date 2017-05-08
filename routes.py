@@ -25,7 +25,7 @@ def show_card_by_name():
 	card_name = card.name
 	card_manacost = card.mana_cost
 	card_text = card.text
-	card_colors = str(card.colorsref)
+	card_colors = str(card.colors)
 	card_types = str(card.typesref)
 	card_subtypes = str(card.subtypesref)
 	return json.dumps(dict(name = card_name,
@@ -265,8 +265,7 @@ def add_card_to_user(username):
 def show_user_cards(username):
 	cardsnames = []
 	user = Users.query.filter_by(username = username).first()
-	mycards = user.mycards
-	for card in mycards:
+	for card in user.user_cards:
 		cardsnames.append(card.name)
 	return json.dumps(dict(name = cardsnames))
 # --------------------------------------------------------------
@@ -280,7 +279,7 @@ def show_user_card_by_manacost(username):
 	manacost = str(sorted(user_input['mana_cost']))
 	cardnames = []
 	user = Users.query.filter_by(username = username).first()
-	for card in user.mycards:
+	for card in user.user_cards:
 		if card.mana_cost == manacost:
 			cardnames.append(card.name)
 	return json.dumps(dict(names = cardnames))
@@ -294,12 +293,12 @@ def show_user_card_by_name(username):
 	user_input = request.get_json()
 	name = user_input['name']
 	user = Users.query.filter_by(username = username).first()
-	for card in user.mycards:
+	for card in user.user_cards:
 		if(card.name == name):
 			card_name = card.name
 			card_manacost = card.mana_cost
 			card_text = card.text
-			card_colors = str(card.colorsref)
+			card_colors = str(card.colors)
 			card_types = str(card.typesref)
 			card_subtypes = str(card.subtypesref)
 			break
@@ -320,7 +319,7 @@ def show_user_card_colors(username):
   	colors = sorted(user_input['colors'])
   	cardnames = []
   	user = Users.query.filter_by(username = username).first()
-	for card in user.mycards:
+	for card in user.user_cards:
   		tostring = []
 		for color in card.colors:
 			tostring.append(str(color))
@@ -340,7 +339,7 @@ def show_user_card_by_types(username):
 	user = Users.query.filter_by(username = username).first()
 	cardnames = []
 	type_filter = 0
-	for card in user.mycards:
+	for card in user.user_cards:
 		tostring = []
 		for type in card.types:
 			tostring.append(str(type))
@@ -365,7 +364,7 @@ def show_user_card_by_text(username):
 	user = Users.query.filter_by(username = username).first()
 	cardnames = []
 	card_filter = 0
-	for card in user.mycards:
+	for card in user.user_cards:
 		for word in text:
 			if word in card.text.lower():
 				card_filter = 1
@@ -387,7 +386,7 @@ def show_user_card_by_subtypes(username):
 	user = Users.query.filter_by(username = username).first()
 	cardnames = []
 	subtype_filter= 0 # Guarantee that all subtypes are in the card at once
-	for card in user.mycards:
+	for card in user.user_cards:
 		tostring = []
 		for subtype in card.subtypes:
 			tostring.append(str(subtype))
@@ -415,7 +414,7 @@ def show_user_card_by_mana_color(username):
 		formated_manacost += '{%s}' % eachletter # To get input in {letter}{letter} format
 	colors = user_input['colors']
 	user = Users.query.filter_by(username = username).first()
-	for eachcard in user.mycards:		
+	for eachcard in user.user_cards:		
 		if eachcard.mana_cost == formated_manacost:
 			if eachcard.colors == str(sorted(colors)):
 				cardnames.append(eachcard.name)
@@ -435,7 +434,7 @@ def show_user_card_by_sub_color_text(username):
 	card_filter_text = 0 
 	cardnames = []
 	subtype_filter = 0
-	for card in user.mycards:
+	for card in user.user_cards:
 		subtype_tostring = []
 		color_tostring = []
 		for subtype in card.subtypes:
@@ -460,6 +459,16 @@ def show_user_card_by_sub_color_text(username):
 					cardnames.append(card.name)
 	return json.dumps(dict(names = cardnames))
 # --------------------------------------------------------------
+
+# DELETING USER
+
+@app.route('/delete/<username>', methods = ['DELETE'])
+def delete_user(username):
+	user = Users.query.filter_by(username = username).first()
+	user_id = user.user_id
+	db.session.delete(user)
+	db.session.commit()
+	return 'User with id = %d deleted' % user_id
 
 # --------------------------------------------------------------
 # TABLE CLANS ROUTES
@@ -524,13 +533,3 @@ def update_clan_users(username):
 	db.session.commit()
 	return 'You changed from %s to %s' % (old_clan_name,clan)
 # --------------------------------------------------------------
-
-# DELETING USER
-
-@app.route('/clan/delete/<username>', methods = ['DELETE'])
-def delete_user(username):
-	user = Users.query.filter_by(username = username).first()
-	user_id = user.user_id
-	db.session.delete(user)
-	db.session.commit()
-	return 'User with id = %d deleted' % user_id

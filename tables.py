@@ -34,7 +34,6 @@ class Colors(db.Model):
 
 	id = db.Column(db.Integer, primary_key = True)
 	color = db.Column(db.String, unique = True)
-	card_color = db.relationship('Cards', secondary = card_colors_relationship, backref = db.backref('colorsref'))
 
 	def __init__(self, color):
 
@@ -49,7 +48,6 @@ class Types(db.Model):
 
 	id = db.Column(db.Integer, primary_key = True)
 	types = db.Column(db.String, unique = True)
-	card_types = db.relationship('Cards', secondary = card_types_relationship, backref = db.backref('typesref'))
 
 	def __init__(self, types):
 
@@ -64,7 +62,6 @@ class Subtypes(db.Model):
 
 	id = db.Column(db.Integer, primary_key = True)
 	subtype = db.Column(db.String, unique = True)
-	card_subtype = db.relationship('Cards', secondary = card_subtypes_relationship, backref = db.backref('subtypesref')) 
 
 	def __init__(self, subtype):
 
@@ -80,11 +77,10 @@ class Cards(db.Model):
 	card_id = db.Column(db.Integer, primary_key = True)
 	name = db.Column(db.String, unique = True)
 	mana_cost = db.Column(db.String)
-	colors = db.relationship('Colors', secondary = card_colors_relationship, backref = db.backref('colorcards', lazy = 'dynamic'))
-	types = db.relationship('Types', secondary = card_types_relationship, backref = db.backref('typecards', lazy = 'dynamic'))
-	subtypes = db.relationship('Subtypes', secondary = card_subtypes_relationship, backref = db.backref('subtypescards', lazy = 'dynamic'))
+	colors_ref = db.relationship('Colors', secondary = card_colors_relationship, backref = db.backref('colorcards', lazy = 'dynamic'))
+	types_ref = db.relationship('Types', secondary = card_types_relationship, backref = db.backref('typecards', lazy = 'dynamic'))
+	subtypes_ref = db.relationship('Subtypes', secondary = card_subtypes_relationship, backref = db.backref('subtypescards', lazy = 'dynamic'))
 	text = db.Column(db.String)
-	owners = db.relationship('Users', secondary = card_decks_relationship, backref = db.backref('mycards', lazy = 'dynamic'), cascade = 'delete')
 
 	def __init__(self,name, mana_cost,text):
 		
@@ -107,7 +103,7 @@ class Users(db.Model):
 	user_id = db.Column(db.Integer, primary_key = True)
 	username = db.Column(db.String, unique = True)
 	email = db.Column(db.String, unique = True)
-	user_cards = db.relationship('Cards', secondary = card_decks_relationship, backref = db.backref('owner', lazy = 'dynamic'), cascade = 'delete')
+	user_cards = db.relationship('Cards', secondary = card_decks_relationship, backref = db.backref('owner', lazy = 'dynamic'))
 	my_clan = db.Column(db.Integer, db.ForeignKey('clans.clan_id'))
 
 	def __init__(self,username,email):
