@@ -246,7 +246,7 @@ def add_user():
 
 # ADDING CARDS TO A SPECIFIC USER
 
-@app.route('/add/<username>', methods = ['POST'])
+@app.route('/addcard/<username>', methods = ['POST'])
 def add_card_to_user(username):
 
 	user_input = request.get_json()
@@ -473,14 +473,14 @@ def add_user_to_clan(username):
 	user_input = request.get_json()
 	userclan = user_input['clan']
 	user = Users.query.filter_by(username = username).first()
-	if user.my_clan == None:
-		clan = Clans.query.filter_by(clan_name = userclan).first()
-		clan.clanusers.append(user)
+	if user.myclan == None:
+	 	clan_ref = Clans.query.filter_by(clan_name = userclan).first()
+	 	clan_ref.user_ref.append(user)
 		db.session.commit()
 	else:
 		my_clan = Clans.query.filter_by(clan_id = user.my_clan).first()
 		return 'You already have a clan (%s)!' % my_clan.clan_name
-	return 'Clan %s added to User %s' % (clan.clan_name, user.username)
+	return 'Clan %s added to User %s' % (clan_ref.clan_name, user.username)
 # --------------------------------------------------------------
 
 # SHOWING USER CLAN
@@ -493,6 +493,7 @@ def show_user_clan(username):
 	clan = Clans.query.filter_by(clan_id = clan_id).first()
 
 	return 'Your clan is %s' % clan.clan_name
+# --------------------------------------------------------------
 
 # SHOWING CLAN USERS
 
@@ -507,6 +508,7 @@ def show_clan_users(clanname):
 		user_names.append(user.username)
 	return json.dumps(dict(users = user_names))
 	return 'ok'
+# --------------------------------------------------------------
 
 # UPDATING USER CLAN
 
@@ -522,15 +524,14 @@ def update_clan_users(username):
 	new_clan.clanusers.append(user)
 	db.session.commit()
 	return 'You changed from %s to %s' % (old_clan_name,clan)
+# --------------------------------------------------------------
 
+# DELETING USER
 
-# DELETING CLAN
-
-# @app.route('/delete', methods = ['DELETE'])
-# def delete_user():
-# 	user_input = request.get_json()
-# 	cid = user_input['id']
-# 	user = Clans.query.filter_by(clan_id = cid).first()
-# 	db.session.delete(user)
-# 	db.session.commit()
-# 	return 'deleted'
+@app.route('/clan/delete/<username>', methods = ['DELETE'])
+def delete_user(username):
+	user = Users.query.filter_by(username = username).first()
+	user_id = user.user_id
+	db.session.delete(user)
+	db.session.commit()
+	return 'User with id = %d deleted' % user_id

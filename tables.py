@@ -84,7 +84,7 @@ class Cards(db.Model):
 	types = db.relationship('Types', secondary = card_types_relationship, backref = db.backref('typecards', lazy = 'dynamic'))
 	subtypes = db.relationship('Subtypes', secondary = card_subtypes_relationship, backref = db.backref('subtypescards', lazy = 'dynamic'))
 	text = db.Column(db.String)
-	owners = db.relationship('Users', secondary = card_decks_relationship, backref = db.backref('mycards', lazy = 'dynamic'))
+	owners = db.relationship('Users', secondary = card_decks_relationship, backref = db.backref('mycards', lazy = 'dynamic'), cascade = 'delete')
 
 	def __init__(self,name, mana_cost,text):
 		
@@ -107,8 +107,7 @@ class Users(db.Model):
 	user_id = db.Column(db.Integer, primary_key = True)
 	username = db.Column(db.String, unique = True)
 	email = db.Column(db.String, unique = True)
-	user_cards = db.relationship('Cards', secondary = card_decks_relationship, backref = db.backref('owner', lazy = 'dynamic'))
-	clan_ref = db.relationship('Clans', backref = db.backref('clanusers', lazy = 'dynamic'))
+	user_cards = db.relationship('Cards', secondary = card_decks_relationship, backref = db.backref('owner', lazy = 'dynamic'), cascade = 'delete')
 	my_clan = db.Column(db.Integer, db.ForeignKey('clans.clan_id'))
 
 	def __init__(self,username,email):
@@ -128,7 +127,7 @@ class Clans(db.Model):
 
  	clan_id = db.Column(db.Integer, primary_key = True)
  	clan_name = db.Column(db.String, unique = True)
-	
+	user_ref = db.relationship('Users', backref = db.backref('myclan'))
 
  	def __init__(self,clan_name):
  		self.clan_name = clan_name
