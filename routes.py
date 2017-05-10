@@ -41,15 +41,19 @@ def show_card_by_name():
 def show_card_colors():
 
   	user_input = request.get_json()
-  	colors = sorted(user_input['colors'])
+  	colors = user_input['colors']
   	cardnames = []
-	color_column = Colors.query.filter_by(color = colors[0]).first()
-	for card in color_column.colorcards:
-		tostring = []
-		for color in card.colors_ref:
-			tostring.append(str(color))
-		if sorted(tostring) == colors:
-			cardnames.append(card.name)
+  	if len(colors) > 1:
+		color_column = Colors.query.filter_by(color = colors[0]).first()
+		for card in color_column.colorcards:
+			tostring = []
+			for color in card.colors_ref:
+				tostring.append(str(color))
+			if sorted(tostring) == sorted(colors):
+				cardnames.append(card.name)
+	else:
+		color_column = Colors.query.filter_by(color = colors).all()
+		print color_column
 	return json.dumps(dict(names = cardnames))
 # --------------------------------------------------------------
 
@@ -169,9 +173,8 @@ def show_card_by_manacost():
 	cardnames = []
 	cards = Cards.query.filter_by(mana_cost = manacost).all()
 	for card in cards:
-		print manacost,card.mana_cost
 		if card.mana_cost == manacost:
-			cardnames.append(card.mana_cost)
+			cardnames.append(card.name)
 	return json.dumps(dict(names = cardnames))
 # --------------------------------------------------------------
 
@@ -209,16 +212,13 @@ def show_card_by_types():
 def show_card_by_mana_color():
 
 	user_input = request.get_json()
-	manacost = user_input['mana_cost']
-	formated_manacost = ''
+	manacost = str(sorted(user_input['mana_cost']))
 	cardnames = []
-	for letter in manacost:
-		formated_manacost += '{%s}' % letter # To get input in {letter}{letter} format
 	colors = sorted(user_input['colors'])
-	card_from_manacost = Cards.query.filter_by( mana_cost = formated_manacost).all()
+	card_from_manacost = Cards.query.filter_by( mana_cost = manacost).all()
 	for card in card_from_manacost:
 		tostring = []
-		for color in card.colors:
+		for color in card.colors_ref:
 			tostring.append(str(color))
 		if sorted(tostring) == colors:
 			cardnames.append(card.name)

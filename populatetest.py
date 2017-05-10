@@ -95,7 +95,7 @@ def populate_tests():
 def map_tests():
 
 	for card in json_test_cards.values():
-		subtypes = card.get('subtypes','')
+		subtypes = card.get('subtypes', '')
 		types = card.get('types', '')
 		colors = card.get('colors', '')
 		name = card.get('name','')
@@ -110,6 +110,6 @@ def map_tests():
 			subtype_table = Subtypes.query.filter_by(subtype = subtype).first()
 			table_card.subtypes_ref.append(subtype_table)
 		db.session.commit()
-
+	return 'mapped'
 	
 
