@@ -57,11 +57,10 @@ def show_card_colors():
 
 # SHOW CARD USERS
 
-@app.route('/users')
+@app.route('/users/')
 def show_card_users():
 
-	user_input = request.get_json()
-	cardname = user_input['name']
+	cardname = request.args.get('name','')
 	users = Cards.query.filter_by( name = cardname).first()
 	usernames = []
 	for user in users.owner:
@@ -71,11 +70,10 @@ def show_card_users():
 
 # SHOWING CARDS BY TEXT
 
-@app.route('/text')
+@app.route('/text/')
 def show_card_by_text():
 
-	user_input = request.get_json()
-	text = user_input['text']
+	text = request.args.get('text','')
 	cards = Cards.query.all()
 	cardnames = []
 	card_filter = 0
@@ -93,19 +91,20 @@ def show_card_by_text():
 
 # SHOWING CARDS BY SUBTYPES
 
-@app.route('/subtypes')
+@app.route('/subtypes/')
 def show_card_by_subtypes():
 
-	user_input = request.get_json()
-	subtypes = user_input['subtypes']
-	subtype_column = Subtypes.query.filter_by(subtype = subtypes[0]).first()
+	subtypes = request.args.get('subtypes','')
+	subtypes_list = subtypes.split(',')
+	subtype_column = Subtypes.query.filter_by(subtype = subtypes_list[0]).first()
+	print subtype_column.subtypescards
 	cardnames = []
 	subtype_filter= 0 # Guarantee that all subtypes are in the card at once
 	for card in subtype_column.subtypescards:
 		tostring = []
 		for subtype in card.subtypes_ref:
 			tostring.append(str(subtype))
-		for subtype in subtypes:
+		for subtype in subtypes_list:
 			if subtype in tostring:
 				subtype_filter = 1
 			else:
@@ -178,19 +177,19 @@ def show_card_by_manacost():
 
 # SHOWING CARDS BY TYPES
 
-@app.route('/types')
+@app.route('/types/')
 def show_card_by_types():
 
-	user_input = request.get_json()
-	types = user_input['types']
-	type_column = Types.query.filter_by(types = types[0]).first()
+	types = request.args.get('types','')
+	types_list = types.split(',')
+	type_column = Types.query.filter_by(types = types_list[0]).first()
 	cardnames = []
 	type_filter = 0
 	for card in type_column.typecards:
 		tostring = []
 		for type in card.types_ref:
 			tostring.append(str(type))
-		for type in types:
+		for type in types_list:
 			if type in tostring:
 				type_filter = 1
 			else:
@@ -256,7 +255,7 @@ def add_card_to_user(username):
 		card = Cards.query.filter_by(name = card_name[number]).first()
 		card.owner.append(user)
 		db.session.commit()
-	return jsonify(dict(names = card_name)) + 'added to %s' % user.username
+	return jsonify(dict(names = card_name))
 # --------------------------------------------------------------
 
 # SHOWING USER CARDS
