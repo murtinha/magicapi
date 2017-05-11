@@ -15,11 +15,10 @@ def health_check():
 
 # SHOWING CARDS BY NAME
 
-@app.route('/name')
+@app.route('/name/', methods = ['GET'])
 def show_card_by_name():
 
-	user_input = request.get_json()
-	name = user_input['name']
+	name = request.args.get('name','')
 	card = Cards.query.filter_by(name = name).first()
 	card_name = card.name
 	card_manacost = card.mana_cost
@@ -40,18 +39,18 @@ def show_card_by_name():
 
 # SHOWING CARDS BY COLOR
 
-@app.route('/colors')
+@app.route('/colors/')
 def show_card_colors():
 
-  	user_input = request.get_json()
-  	colors = user_input['colors']
+  	colors = request.args.get('colors', '')
+ 	colors_list = colors.split(',')
   	cardnames = []
-	color_column = Colors.query.filter_by(color = colors[0]).first()
+	color_column = Colors.query.filter_by(color = colors_list[0]).first()
 	for card in color_column.colorcards:
-		tostring = []
+  		tostring = []
 		for color in card.colors_ref:
 			tostring.append(str(color))
-		if sorted(tostring) == sorted(colors):
+		if sorted(tostring) == sorted(colors_list):
 			cardnames.append(card.name)
 	return jsonify(dict(names = cardnames))
 # --------------------------------------------------------------
@@ -277,7 +276,7 @@ def show_user_cards(username):
 def show_user_card_by_manacost(username):
 
 	user_input = request.get_json()
-	manacost = str(sorted(user_input['mana_cost']))
+	manacost = user_input['mana_cost']
 	cardnames = []
 	user = Users.query.filter_by(username = username).first()
 	for card in user.user_cards:
@@ -409,14 +408,11 @@ def show_user_card_by_mana_color(username):
 
 	user_input = request.get_json()
 	manacost = user_input['mana_cost']
-	formated_manacost = ''
 	cardnames = []
-	for eachletter in manacost:
-		formated_manacost += '{%s}' % eachletter # To get input in {letter}{letter} format
 	colors = user_input['colors']
 	user = Users.query.filter_by(username = username).first()
 	for eachcard in user.user_cards:		
-		if eachcard.mana_cost == formated_manacost:
+		if eachcard.mana_cost == manacost:
 			if eachcard.colors == str(sorted(colors)):
 				cardnames.append(eachcard.name)
 	return jsonify(dict(names = cardnames))
