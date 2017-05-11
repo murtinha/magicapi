@@ -1,11 +1,14 @@
 from app import app,db
 from tables import Cards,Colors,Types,Subtypes, Clans
 from loadjsoncards import data
-from allsingletypes import types_flatten, subtypes_flatten
+from allsingletypes import single_types, single_subtypes
 import re
 # --------------------------------------------------------------
 
 # THIS ROUTE IS ONLY FOR POPULATING DB WITH CARD FROM JSONFILE
+
+types_flatten = single_types(data)
+subtypes_flatten = single_subtypes(data)
 
 # CARDS
  	
@@ -40,9 +43,10 @@ for card in data.values():
 	colors = card.get('colors', [])
 	name = card.get('name','')
 	table_card = Cards.query.filter_by(name = name).first()
-	for color in colors:
-		color_table = Colors.query.filter_by(color = color).first()
-		table_card.colors_ref.append(color_table)
+	if colors != []:
+		for color in colors:
+			color_table = Colors.query.filter_by(color = color).first()
+			table_card.colors_ref.append(color_table)
 	else:
 		color_table = Colors.query.filter_by(color = "empty").first()
 		table_card.colors_ref.append(color_table)
@@ -79,9 +83,10 @@ for card in data.values():
 	types = card.get('types', [])
 	name = card.get('name', '')
 	table_card = Cards.query.filter_by(name = name).first()
-	for type in types:
-		type_table = Types.query.filter_by(types = type).first()
-		table_card.types_ref.append(type_table)
+	if types != []:
+		for type in types:
+			type_table = Types.query.filter_by(types = type).first()
+			table_card.types_ref.append(type_table)
 	else:
 		type_table = Types.query.filter_by(types = "empty").first()
 		table_card.types_ref.append(type_table)
@@ -100,9 +105,10 @@ for card in data.values():
 	subtypes = card.get('subtypes', [])
 	name = card.get('name', '')
 	table_card = Cards.query.filter_by(name = name).first()
-	for subtype in subtypes:
-		subtype_table = Subtypes.query.filter_by(subtype = subtype).first()
-		table_card.subtypes_ref.append(subtype_table)
+	if subtypes != []:
+		for subtype in subtypes:
+			subtype_table = Subtypes.query.filter_by(subtype = subtype).first()
+			table_card.subtypes_ref.append(subtype_table)
 	else:
 		subtype_table = Subtypes.query.filter_by(subtype = "empty").first()
 		table_card.subtypes_ref.append(subtype_table)
