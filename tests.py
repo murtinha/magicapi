@@ -39,9 +39,9 @@ class MyTest(BaseTestCase):
 
 	def test_show_cards_by_name(self):
 
-		response = self.client.get('/name', data = json.dumps(dict(name='Air Elemental')),
-																  content_type = 'application/json')
-           				                                          
+		response = self.client.get('/name/?name=Air+Elemental')
+
+		return 'ok'           				                                  
 		flat_response = response.data.replace('\n', '')
 		flat_response = flat_response.replace(' ', '')
 		r = json.dumps(dict(colors="[Blue]",
@@ -58,8 +58,7 @@ class MyTest(BaseTestCase):
 	
 	def test_show_cards_by_color(self):
 		
-		response = self.client.get('/colors', data = json.dumps(dict(colors = ["Green"])),
-                                              				         content_type = 'application/json')
+		response = self.client.get('/colors/?colors=Green')
 		
 		flat_response = response.data.replace('\n', '')
 		flat_response = flat_response.replace(' ', '')
@@ -77,8 +76,7 @@ class MyTest(BaseTestCase):
 		db.session.commit()
 		card = Cards.query.filter_by(name = 'Canyon Slough').first()
 		card.owner.append(user)
-		response = self.client.get('/users', data = json.dumps(dict(name = 'Canyon Slough')),
-																	content_type = 'application/json')
+		response = self.client.get('/users/?name=Canyon Slough')
 
 		flat_response = response.data.replace('\n', '')
 		flat_response = flat_response.replace(' ', '')
@@ -91,8 +89,7 @@ class MyTest(BaseTestCase):
 	
 	def test_show_cards_by_text(self):
 
-		response = self.client.get('/text', data = json.dumps(dict(text = ['flying'])),
-															      content_type = 'application/json')
+		response = self.client.get('/text/?text=flying')
 
 		flat_response = response.data.replace('\n', '')
 		flat_response = flat_response.replace(' ', '')
@@ -105,8 +102,7 @@ class MyTest(BaseTestCase):
 	
 	def test_show_cards_by_subtypes(self):
 
-		response = self.client.get('/subtypes', data = json.dumps(dict(subtypes = ['Aura'])),
-																	  content_type = 'application/json')
+		response = self.client.get('/subtypes/?subtypes=Aura')
 
 		flat_response = response.data.replace('\n', '')
 		flat_response = flat_response.replace(' ', '')
@@ -119,10 +115,7 @@ class MyTest(BaseTestCase):
 
 	def test_show_cards_by_sub_color_text(self):
 
-		response = self.client.get('/subtypes/colors/text', data = json.dumps(dict(subtypes = ['Bird'],
-																		           colors = ['White'],
-																		           text = ['flying'])),
-																				   content_type = 'application/json')
+		response = self.client.get('/subtypes/colors/text/?subtypes=Bird&colors=White&text=flying')
 
 
 		flat_response = response.data.replace('\n', '')
@@ -136,8 +129,7 @@ class MyTest(BaseTestCase):
 	
 	def test_show_cards_by_manacost(self):
 
-		response = self.client.get('/manacost', data = json.dumps(dict(mana_cost = "3UU")),
-																	   content_type = 'application/json')
+		response = self.client.get('/manacost/?manacost=3UU')
 
 
 		flat_response = response.data.replace('\n', '')
@@ -151,8 +143,7 @@ class MyTest(BaseTestCase):
 	
 	def test_show_cards_by_types(self):
 
-		response = self.client.get('/types', data = json.dumps(dict(types = ["Creature","Artifact"])),
-																    content_type = 'application/json')
+		response = self.client.get('/types/?types=Creature,Artifact')
 
 
 		flat_response = response.data.replace('\n', '')
@@ -166,9 +157,7 @@ class MyTest(BaseTestCase):
 
 	def test_show_cards_by_manacost_colors(self):
 
-		response = self.client.get('/manacost/colors', data = json.dumps(dict(mana_cost = "W",
-																			  colors = ["White"])),
-																			  content_type = 'application/json')
+		response = self.client.get('/manacost/colors/?manacost=W&colors=White')
 
 
 		flat_response = response.data.replace('\n', '')
@@ -179,6 +168,17 @@ class MyTest(BaseTestCase):
 # -----------------------------------------------------------------------------------------------------------------------------------------------------------
 
 # ADDING USER
+
+	def test_add_user(self):
+		response = self.client.post('/adduser', data = json.dumps(dict(username = 'eric',
+																	 email = 'eric@m.com')),
+																	 content_type = 'application/json')
+
+
+		user = Users.query.filter_by(username = 'eric').first()
+		self.assertEqual('eric', user.username)
+		self.assertEqual('eric@m.com', user.email)
+
 
 if __name__ == '__main__':
     unittest.main()
