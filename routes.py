@@ -211,7 +211,7 @@ def show_card_by_types():
 def show_card_by_mana_color():
 
 	user_input = request.get_json()
-	manacost = str(sorted(user_input['mana_cost']))
+	manacost = user_input['mana_cost']
 	cardnames = []
 	colors = sorted(user_input['colors'])
 	card_from_manacost = Cards.query.filter_by( mana_cost = manacost).all()

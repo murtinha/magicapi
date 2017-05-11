@@ -1,4 +1,4 @@
-from flask import json, Flask
+from flask import json, jsonify, Flask
 from app import app,db
 from tables import Cards, Users, Clans, Colors, Types, Subtypes
 import unittest
@@ -16,7 +16,6 @@ class BaseTestCase(TestCase):
         db.create_all()
         populate_tests()
         map_tests()
-
     def tearDown(self):        
         db.session.remove()
         db.drop_all()
@@ -40,14 +39,19 @@ class MyTest(BaseTestCase):
 
 	def test_show_cards_by_name(self):
 
-		response = self.client.get('/name',data = json.dumps(dict(name='Air Elemental')),
-           				                                          content_type='application/json')
-		self.assertEqual(json.dumps(dict(colors = "[Blue]",
-                                         mana_cost = "[u'3', u'U', u'U']",
-                                         name = "Air Elemental",
-                                         subtypes = "[Elemental]",
-                                         text = "Flying",
-                                         types = "[Creature]")), response.data)
+		response = self.client.get('/name', data = json.dumps(dict(name='Air Elemental')),
+																  content_type = 'application/json')
+           				                                          
+		flat_response = response.data.replace('\n', '')
+		flat_response = flat_response.replace(' ', '')
+		r = json.dumps(dict(colors="[Blue]",
+                            mana_cost="3UU",
+                            name="Air Elemental",
+                            subtypes="[Elemental]",
+                            text="Flying",
+                            types= "[Creature]"))
+		r = r.replace(' ', '')
+		self.assertEqual(r, flat_response)
 # -----------------------------------------------------------------------------------------------------------------------------------------------------------
 
 # SHOW CARDS BY COLOR
@@ -57,8 +61,11 @@ class MyTest(BaseTestCase):
 		response = self.client.get('/colors', data = json.dumps(dict(colors = ["Green"])),
                                               				         content_type = 'application/json')
 		
-		
-		self.assertEqual(json.dumps(dict(names = ["Berserk", "Aspect of Wolf", "Birds of Paradise"])),response.data)
+		flat_response = response.data.replace('\n', '')
+		flat_response = flat_response.replace(' ', '')
+		r = json.dumps(dict(names = ["Berserk", "Aspect of Wolf", "Birds of Paradise"]))
+		r = r.replace(' ', '')
+		self.assertEqual(r, flat_response)
 # -----------------------------------------------------------------------------------------------------------------------------------------------------------
   
 # SHOW CARD USERS
@@ -72,7 +79,12 @@ class MyTest(BaseTestCase):
 		card.owner.append(user)
 		response = self.client.get('/users', data = json.dumps(dict(name = 'Canyon Slough')),
 																	content_type = 'application/json')
-		self.assertEqual(json.dumps(dict(usernames = ['Eric'])),response.data)
+
+		flat_response = response.data.replace('\n', '')
+		flat_response = flat_response.replace(' ', '')
+		r = json.dumps(dict(usernames = ['Eric']))
+		r = r.replace(' ', '')
+		self.assertEqual(r, flat_response)
 # -----------------------------------------------------------------------------------------------------------------------------------------------------------
 
 # SHOW CARDS BY TEXT
@@ -81,7 +93,12 @@ class MyTest(BaseTestCase):
 
 		response = self.client.get('/text', data = json.dumps(dict(text = ['flying'])),
 															      content_type = 'application/json')
-		self.assertEqual(json.dumps(dict(names = ["Air Elemental","Birds of Paradise","Companion of the Trials"])),response.data)
+
+		flat_response = response.data.replace('\n', '')
+		flat_response = flat_response.replace(' ', '')
+		r = json.dumps(dict(names = ["Air Elemental","Birds of Paradise","Companion of the Trials"]))
+		r = r.replace(' ', '')
+		self.assertEqual(r,flat_response)
 # -----------------------------------------------------------------------------------------------------------------------------------------------------------
 
 # SHOW CARDS BY SUBTYPES
@@ -90,7 +107,12 @@ class MyTest(BaseTestCase):
 
 		response = self.client.get('/subtypes', data = json.dumps(dict(subtypes = ['Aura'])),
 																	  content_type = 'application/json')
-		self.assertEqual(json.dumps(dict(names = ["Animate Wall","Aspect of Wolf","Black Ward","Animate Dead","Animate Artifact"])),response.data)
+
+		flat_response = response.data.replace('\n', '')
+		flat_response = flat_response.replace(' ', '')
+		r = json.dumps(dict(names = ["Animate Wall","Aspect of Wolf","Black Ward","Animate Dead","Animate Artifact"]))
+		r = r.replace(' ', '')
+		self.assertEqual(r,flat_response)
 # -----------------------------------------------------------------------------------------------------------------------------------------------------------
 
 # SHOW CARDS BY SUBTYPES,COLOR,TEXT
@@ -102,17 +124,27 @@ class MyTest(BaseTestCase):
 																		           text = ['flying'])),
 																				   content_type = 'application/json')
 
-		self.assertEqual(json.dumps(dict(names = ["Companion of the Trials"])),response.data)
+
+		flat_response = response.data.replace('\n', '')
+		flat_response = flat_response.replace(' ', '')
+		r = json.dumps(dict(names = ["Companion of the Trials"]))
+		r = r.replace(' ', '')
+		self.assertEqual(r,flat_response)
 # -----------------------------------------------------------------------------------------------------------------------------------------------------------
 
 # SHOW CARDS BY MANACOST
 	
 	def test_show_cards_by_manacost(self):
 
-		response = self.client.get('/manacost', data = json.dumps(dict(mana_cost = ["3", "U", "U"])),
+		response = self.client.get('/manacost', data = json.dumps(dict(mana_cost = "3UU")),
 																	   content_type = 'application/json')
-		
-		self.assertEqual(json.dumps(dict(names = ["Air Elemental"])),response.data)
+
+
+		flat_response = response.data.replace('\n', '')
+		flat_response = flat_response.replace(' ', '')
+		r = json.dumps(dict(names = ["Air Elemental"]))
+		r = r.replace(' ', '')
+		self.assertEqual(r ,flat_response)
 # -----------------------------------------------------------------------------------------------------------------------------------------------------------
 
 # SHOW CARDS BY TYPE
@@ -122,17 +154,31 @@ class MyTest(BaseTestCase):
 		response = self.client.get('/types', data = json.dumps(dict(types = ["Creature","Artifact"])),
 																    content_type = 'application/json')
 
-		self.assertEqual(json.dumps(dict(names = ["Watchers of the Dead"])), response.data)
+
+		flat_response = response.data.replace('\n', '')
+		flat_response = flat_response.replace(' ', '')
+		r = json.dumps(dict(names = ["Watchers of the Dead"]))
+		r = r.replace(' ', '')
+		self.assertEqual(r, flat_response)
+# -----------------------------------------------------------------------------------------------------------------------------------------------------------
 
 # SHOW CARDS BY MANACOST AND COLOR
 
 	def test_show_cards_by_manacost_colors(self):
 
-		response = self.client.get('/manacost/colors', data = json.dumps(dict(mana_cost = ["W"],
+		response = self.client.get('/manacost/colors', data = json.dumps(dict(mana_cost = "W",
 																			  colors = ["White"])),
 																			  content_type = 'application/json')
-		
-		self.assertEqual(json.dumps(dict(names = ["Animate Wall","Benalish Hero","Black Ward","Blaze of Glory"])),response.data)
+
+
+		flat_response = response.data.replace('\n', '')
+		flat_response = flat_response.replace(' ', '')
+		r = json.dumps(dict(names = ["Animate Wall","Benalish Hero","Black Ward","Blaze of Glory"]))
+		r = r.replace(' ', '')
+		self.assertEqual(r,flat_response)
+# -----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# ADDING USER
 
 if __name__ == '__main__':
     unittest.main()
