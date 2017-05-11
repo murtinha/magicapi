@@ -41,7 +41,6 @@ class MyTest(BaseTestCase):
 
 		response = self.client.get('/name/?name=Air+Elemental')
 
-		return 'ok'           				                                  
 		flat_response = response.data.replace('\n', '')
 		flat_response = flat_response.replace(' ', '')
 		r = json.dumps(dict(colors="[Blue]",
@@ -170,14 +169,111 @@ class MyTest(BaseTestCase):
 # ADDING USER
 
 	def test_add_user(self):
+		
 		response = self.client.post('/adduser', data = json.dumps(dict(username = 'eric',
 																	 email = 'eric@m.com')),
 																	 content_type = 'application/json')
 
 
 		user = Users.query.filter_by(username = 'eric').first()
+		self.assertIn('User eric added',response.data)
 		self.assertEqual('eric', user.username)
 		self.assertEqual('eric@m.com', user.email)
+# -----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# ADDING CARDS TO A SPECIFIC USER
+
+	def test_add_cards_to_user(self):
+
+		user = Users('eric','email@c.com')
+		db.session.add(user)
+		db.session.commit()
+		response = self.client.post('/addcard/eric', data = json.dumps(dict(name=['Graceful Cat','Animate Artifact'])),
+							 												content_type = 'application/json')
+		user_table = Users.query.filter_by(username = 'eric').first()
+		card_names = []
+		for card in user_table.user_cards:
+			card_names.append(card.name)
+
+		flat_response = response.data.replace('\n', '')
+		flat_response = flat_response.replace(' ','')
+		r = json.dumps(dict(names=['Graceful Cat','Animate Artifact']))
+		r = r.replace(' ', '')
+		self.assertEqual(r, flat_response)
+		self.assertEqual(['Graceful Cat', 'Animate Artifact'], card_names)
+# -----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# SHOWING USER CARDS
+
+	def test_show_user_cards(self):
+
+		user = Users('eric','email@c.com')
+		db.session.add(user)
+		db.session.commit()
+		card = Cards.query.filter_by(name = 'Graceful Cat').first()
+		card.owner.append(user)
+		db.session.commit()
+
+		response = self.client.get('/cards/eric')
+		flat_response = response.data.replace('\n','')
+		flat_response = flat_response.replace(' ','')
+
+		r = json.dumps(dict(names = ['Graceful Cat']))
+		r = r.replace(' ','')
+		self.assertEqual(r, flat_response)
+# -----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# SHOWING CARDS BY MANACOST
+
+	def test_show_user_cards_by_manacost(self):
+
+		user = Users('eric','email@c.com')
+		db.session.add(user)
+		db.session.commit()
+		card_1 = Cards.query.filter_by(name = 'Cascading Cataracts').first()
+		card_2 = Cards.query.filter_by(name = 'Animate Dead').first()
+		card_1.owner.append(user)
+		card_2.owner.append(user)
+		db.session.commit()
+
+		response_1 = self.client.get('/manacost/eric/?manacost=')
+		response_2 = self.client.get('/manacost/eric/?manacost=B1')
+
+		flat_response_1 = response_1.data.replace('\n', '')
+		flat_response_1 = flat_response_1.replace(' ','')
+		r_1 = json.dumps(dict(names=['Cascading Cataracts']))
+		r_1 = r_1.replace(' ', '')
+
+		flat_response_2 = response_2.data.replace('\n', '')
+		flat_response_2 = flat_response_2.replace(' ','')
+		r_2 = json.dumps(dict(names=['Animate Dead']))
+		r_2 = r_2.replace(' ', '')
+
+		self.assertEqual(r_1, flat_response_1)
+		self.assertEqual(r_2, flat_response_2)
+# -----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# SHOWING CARDS BY NAME
+	
+	def test_show_user_card_colors(self):
+
+		user = Users('eric','email@c.com')
+		db.session.add(user)
+		db.session.commit()
+		card = Cards.query.filter_by(name = 'Armageddon').first()
+		card.owner.append(user)
+
+		response = self.client.get('/name/eric/?name=Armageddon')
+		flat_response = response.data.replace('\n', '')
+		flat_response = flat_response.replace(' ', '')
+		r = json.dumps(dict(colors="[White]",
+                            mana_cost="3W",
+                            name="Armageddon",
+                            subtypes="[empty]",
+                            text="Destroy all lands.",
+                            types= "[Sorcery]"))
+		r = r.replace(' ', '')
+		self.assertEqual(r, flat_response)
 
 
 if __name__ == '__main__':

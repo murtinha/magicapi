@@ -280,7 +280,7 @@ def show_user_card_by_manacost(username):
 
 	manacost = request.args.get('manacost','')
 	manacost_sorted = sorted(manacost)
-	manacost_sorted = ''.join(manacost)
+	manacost_sorted = ''.join(manacost_sorted)
 	cardnames = []
 	user = Users.query.filter_by(username = username).first()
 	for card in user.user_cards:
