@@ -1,6 +1,6 @@
 from app import app,db
 from tables import Cards, Users, Colors, Types, Subtypes, Clans
-from flask import request, json
+from flask import request, jsonify
 
 
 # HEALTH-CHECK
@@ -24,10 +24,13 @@ def show_card_by_name():
 	card_name = card.name
 	card_manacost = card.mana_cost
 	card_text = card.text
-	card_colors = str(card.colors_ref)
+	if type(card.colors_ref) != "None":
+		card_colors = str(card.colors_ref)
+	else:
+		card_colors = "None"
 	card_types = str(card.types_ref)
 	card_subtypes = str(card.subtypes_ref)
-	return json.dumps(dict(name = card_name,
+	return jsonify(dict(name = card_name,
 						   mana_cost = card_manacost,
 						   colors = card_colors,
 						   types = card_types,
@@ -43,18 +46,14 @@ def show_card_colors():
   	user_input = request.get_json()
   	colors = user_input['colors']
   	cardnames = []
-  	if len(colors) > 1:
-		color_column = Colors.query.filter_by(color = colors[0]).first()
-		for card in color_column.colorcards:
-			tostring = []
-			for color in card.colors_ref:
-				tostring.append(str(color))
-			if sorted(tostring) == sorted(colors):
-				cardnames.append(card.name)
-	else:
-		color_column = Colors.query.filter_by(color = colors).all()
-		print color_column
-	return json.dumps(dict(names = cardnames))
+	color_column = Colors.query.filter_by(color = colors[0]).first()
+	for card in color_column.colorcards:
+		tostring = []
+		for color in card.colors_ref:
+			tostring.append(str(color))
+		if sorted(tostring) == sorted(colors):
+			cardnames.append(card.name)
+	return jsonify(dict(names = cardnames))
 # --------------------------------------------------------------
 
 # SHOW CARD USERS
@@ -68,7 +67,7 @@ def show_card_users():
 	usernames = []
 	for user in users.owner:
 		usernames.append(user.username)
-	return json.dumps(dict(usernames = usernames))
+	return jsonify(dict(usernames = usernames))
 # --------------------------------------------------------------
 
 # SHOWING CARDS BY TEXT
@@ -90,7 +89,7 @@ def show_card_by_text():
 				break
 		if card_filter == 1:
 			cardnames.append(card.name)
-	return json.dumps(dict(names = cardnames))
+	return jsonify(dict(names = cardnames))
 # --------------------------------------------------------------
 
 # SHOWING CARDS BY SUBTYPES
@@ -115,7 +114,7 @@ def show_card_by_subtypes():
 				break
 		if subtype_filter == 1:
 			cardnames.append(card.name)
-	return json.dumps(dict(names = cardnames))
+	return jsonify(dict(names = cardnames))
 	
 # --------------------------------------------------------------
 
@@ -158,7 +157,7 @@ def show_card_by_sub_color_text():
 						break
 				if card_filter_text == 1:
 					cardnames.append(card.name)
-	return json.dumps(dict(names = cardnames))
+	return jsonify(dict(names = cardnames))
 
 
 # --------------------------------------------------------------
@@ -169,13 +168,13 @@ def show_card_by_sub_color_text():
 def show_card_by_manacost():
 
 	user_input = request.get_json()
-	manacost = str(sorted(user_input['mana_cost']))
+	manacost = user_input['mana_cost']
 	cardnames = []
-	cards = Cards.query.filter_by(mana_cost = manacost).all()
+	cards = Cards.query.filter_by(mana_cost = str(manacost)).all()
 	for card in cards:
 		if card.mana_cost == manacost:
 			cardnames.append(card.name)
-	return json.dumps(dict(names = cardnames))
+	return jsonify(dict(names = cardnames))
 # --------------------------------------------------------------
 
 # SHOWING CARDS BY TYPES
@@ -200,7 +199,7 @@ def show_card_by_types():
 				break
 		if type_filter == 1:
 			cardnames.append(card.name)
-	return json.dumps(dict(names = cardnames))
+	return jsonify(dict(names = cardnames))
 
 
 # --------------------------------------------------------------
@@ -222,7 +221,7 @@ def show_card_by_mana_color():
 			tostring.append(str(color))
 		if sorted(tostring) == colors:
 			cardnames.append(card.name)
-	return json.dumps(dict(names = cardnames))
+	return jsonify(dict(names = cardnames))
 # --------------------------------------------------------------
 
 
@@ -258,7 +257,7 @@ def add_card_to_user(username):
 		card = Cards.query.filter_by(name = card_name[number]).first()
 		card.owner.append(user)
 		db.session.commit()
-	return json.dumps(dict(names = card_name)) + 'added to %s' % user.username
+	return jsonify(dict(names = card_name)) + 'added to %s' % user.username
 # --------------------------------------------------------------
 
 # SHOWING USER CARDS
@@ -269,7 +268,7 @@ def show_user_cards(username):
 	user = Users.query.filter_by(username = username).first()
 	for card in user.user_cards:
 		cardsnames.append(card.name)
-	return json.dumps(dict(name = cardsnames))
+	return jsonify(dict(name = cardsnames))
 # --------------------------------------------------------------
 
 # SHOWING CARDS BY MANACOST
@@ -284,7 +283,7 @@ def show_user_card_by_manacost(username):
 	for card in user.user_cards:
 		if card.mana_cost == manacost:
 			cardnames.append(card.name)
-	return json.dumps(dict(names = cardnames))
+	return jsonify(dict(names = cardnames))
 # --------------------------------------------------------------
 
 # SHOWING CARDS BY NAME
@@ -304,7 +303,7 @@ def show_user_card_by_name(username):
 			card_types = str(card.types_ref)
 			card_subtypes = str(card.subtypes_ref)
 			break
-	return json.dumps(dict(name = card_name,
+	return jsonify(dict(name = card_name,
 						   mana_cost = card_manacost,
 						   colors = card_colors,
 						   types = card_types,
@@ -327,7 +326,7 @@ def show_user_card_colors(username):
 			tostring.append(str(color))
 		if sorted(tostring) == colors:
 			cardnames.append(card.name)
-	return json.dumps(dict(names = cardnames))
+	return jsonify(dict(names = cardnames))
 
 # --------------------------------------------------------------
 
@@ -353,7 +352,7 @@ def show_user_card_by_types(username):
 				break
 		if type_filter == 1:
 			cardnames.append(card.name)
-	return json.dumps(dict(names = cardnames))
+	return jsonify(dict(names = cardnames))
 # --------------------------------------------------------------
 
 # SHOWING CARDS BY TEXT
@@ -375,7 +374,7 @@ def show_user_card_by_text(username):
 				break
 		if card_filter == 1:
 			cardnames.append(card.name)
-	return json.dumps(dict(names = cardnames))
+	return jsonify(dict(names = cardnames))
 # --------------------------------------------------------------
 
 # SHOWING CARDS BY SUBTYPES
@@ -400,7 +399,7 @@ def show_user_card_by_subtypes(username):
  				break
  		if subtype_filter == 1:
  			cardnames.append(card.name)
-	return json.dumps(dict(names = cardnames))
+	return jsonify(dict(names = cardnames))
 # --------------------------------------------------------------
 
 # SHOWING CARDS BY MANACOST AND COLOR
@@ -420,7 +419,7 @@ def show_user_card_by_mana_color(username):
 		if eachcard.mana_cost == formated_manacost:
 			if eachcard.colors == str(sorted(colors)):
 				cardnames.append(eachcard.name)
-	return json.dumps(dict(names = cardnames))
+	return jsonify(dict(names = cardnames))
 # --------------------------------------------------------------
 
 # SHOWING CARDS BY SUBTYPES,COLOR,TEXT
@@ -459,18 +458,32 @@ def show_user_card_by_sub_color_text(username):
 						break
 				if card_filter_text == 1:
 					cardnames.append(card.name)
-	return json.dumps(dict(names = cardnames))
+	return jsonify(dict(names = cardnames))
 # --------------------------------------------------------------
 
 # DELETING USER
 
 @app.route('/delete/<username>', methods = ['DELETE'])
 def delete_user(username):
+	
 	user = Users.query.filter_by(username = username).first()
 	user_id = user.user_id
 	db.session.delete(user)
 	db.session.commit()
 	return 'User with id = %d deleted' % user_id
+# --------------------------------------------------------------
+
+# DELETING CARD FROM USER
+
+# @app.route('/delete/card/<username>')
+# def delete_card_from_user(username):
+	
+# 	  user_input = request.get_json()
+# 	  cardname = user_input['name']
+# 	user = Users.query.filter_by(username = username).first()
+# 	print user.user_cards
+# 	return 'ok'	
+
 
 # --------------------------------------------------------------
 # TABLE CLANS ROUTES
@@ -517,7 +530,7 @@ def show_clan_users(clanname):
 	user_names = []
 	for user in users:
 		user_names.append(user.username)
-	return json.dumps(dict(users = user_names))
+	return jsonify(dict(users = user_names))
 # --------------------------------------------------------------
 
 # UPDATING USER CLAN
