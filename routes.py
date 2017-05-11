@@ -122,7 +122,6 @@ def show_card_by_subtypes():
 def show_card_by_sub_color_text():
 
 	args = request.args
-	print args
 	subtypes = request.args.get('subtypes','')
 	colors = request.args.get('colors','')
 	subtypes_list = subtypes.split(',')
@@ -271,7 +270,7 @@ def show_user_cards(username):
 	user = Users.query.filter_by(username = username).first()
 	for card in user.user_cards:
 		cardsnames.append(card.name)
-	return jsonify(dict(name = cardsnames))
+	return jsonify(dict(names = cardsnames))
 # --------------------------------------------------------------
 
 # SHOWING CARDS BY MANACOST
