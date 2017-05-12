@@ -274,6 +274,237 @@ class MyTest(BaseTestCase):
                             types= "[Sorcery]"))
 		r = r.replace(' ', '')
 		self.assertEqual(r, flat_response)
+# -----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# SHOWING CARDS BY COLOR
+
+	def test_show_user_cards_by_colors(self):
+
+		user = Users('eric','email@c.com')
+		db.session.add(user)
+		db.session.commit()
+		card = Cards.query.filter_by(name = 'Bad Moon').first()
+		card.owner.append(user)
+
+		response = self.client.get('/colors/eric/?colors=Black')
+		flat_response = response.data.replace('\n', '')
+		flat_response = flat_response.replace(' ', '')
+
+		r = json.dumps(dict(names = ['Bad Moon']))
+		r = r.replace(' ', '')
+		self.assertEqual(r, flat_response)
+# -----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# SHOWING CARDS BY TYPES
+	
+	def test_show_user_cards_by_type(self):
+
+		user = Users('eric','email@c.com')
+		db.session.add(user)
+		db.session.commit()
+		card = Cards.query.filter_by(name = 'Balance').first()
+		card.owner.append(user)
+
+		response = self.client.get('/types/eric/?types=Sorcery')
+		flat_response = response.data.replace('\n', '')
+		flat_response = flat_response.replace(' ', '')
+
+		r = json.dumps(dict(names = ['Balance']))
+		r = r.replace(' ','')
+		self.assertEqual(r, flat_response)
+# -----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# SHOWING CARDS BY TEXT
+
+	def test_show_user_cards_by_text(self):
+
+		user = Users('eric','email@c.com')
+		db.session.add(user)
+		db.session.commit()
+		card = Cards.query.filter_by(name = 'Armageddon').first()
+		card.owner.append(user)
+
+		response = self.client.get('/text/eric/?text=destroy')
+		flat_response = response.data.replace('\n', '')
+		flat_response = flat_response.replace(' ', '')
+
+		r = json.dumps(dict(names = ['Armageddon']))
+		r = r.replace(' ','')
+		self.assertEqual(r, flat_response)
+# -----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# SHOWING CARDS BY SUBTYPES
+
+	def test_show_user_cards_by_subtypes(self):
+
+		user = Users('eric','email@c.com')
+		db.session.add(user)
+		db.session.commit()
+		card_1 = Cards.query.filter_by(name = 'Badlands').first()
+		card_1.owner.append(user)
+		card_2 = Cards.query.filter_by(name = 'Bayou').first()
+		card_2.owner.append(user)
+
+		response = self.client.get('/subtypes/eric/?subtypes=Swamp,Mountain')
+		flat_response = response.data.replace('\n', '')
+		flat_response = flat_response.replace(' ', '')
+
+		r = json.dumps(dict(names = ['Badlands']))
+		r = r.replace(' ','')
+		self.assertEqual(r, flat_response)
+# -----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# SHOWING CARDS BY MANACOST AND COLOR
+
+	def test_show_user_cards_by_manacost_color(self):
+
+		user = Users('eric','email@c.com')
+		db.session.add(user)
+		db.session.commit()
+		card_1 = Cards.query.filter_by(name = 'Black Vise').first()
+		card_1.owner.append(user)
+
+		response = self.client.get('/manacost/colors/eric/?manacost=1&colors=empty')
+		flat_response = response.data.replace('\n', '')
+		flat_response = flat_response.replace(' ', '')
+
+		r = json.dumps(dict(names = ['Black Vise']))
+		r = r.replace(' ','')
+		self.assertEqual(r, flat_response)
+# -----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# SHOWING CARDS BY SUBTYPES,COLOR,TEXT
+
+	def test_show_user_cards_by_sub_colors_text(self):
+
+		user = Users('eric','email@c.com')
+		db.session.add(user)
+		db.session.commit()
+		card_1 = Cards.query.filter_by(name = 'Luxa River Shrine').first()
+		card_1.owner.append(user)
+
+
+		response = self.client.get('/subtypes/colors/text/eric/?subtypes=empty&colors=empty&text=life')
+		flat_response = response.data.replace('\n', '')
+		flat_response = flat_response.replace(' ', '')
+
+		r = json.dumps(dict(names = ['Luxa River Shrine']))
+		r = r.replace(' ','')
+		self.assertEqual(r, flat_response)
+# -----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# SHOWING CARDS BY SUBTYPES,COLOR,TEXT
+
+	def test_delete_user(self):
+
+		user = Users('eric','email@c.com')
+		db.session.add(user)
+		db.session.commit()
+		card_1 = Cards.query.filter_by(name = 'Luxa River Shrine').first()
+		card_1.owner.append(user)
+
+		user_id = user.user_id
+		card_id = card_1.card_id
+
+		response = self.client.delete('/delete/eric')
+		deleted_user = Users.query.filter_by(user_id = user_id).first()
+		remaining_card = Cards.query.filter_by(card_id = card_id).first()
+		remaining_card_name = remaining_card.name
+		no_user_counter = 0
+		for user in remaining_card.owner:
+			no_user_counter=+1
+
+		self.assertEqual('User with id = %s deleted' % user_id,response.data)
+		self.assertEqual(None, deleted_user)
+		self.assertEqual(no_user_counter,0)
+		self.assertEqual('Luxa River Shrine', remaining_card_name)
+# -----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# ADDING USER TO CLAN
+	
+	def test_add_user_to_clan(self):
+
+		user = Users('eric','email@c.com')
+		db.session.add(user)
+		db.session.commit()
+
+		response = self.client.post('/addclan/eric', data = json.dumps(dict(clan = 'Rakdos')),
+																		    content_type = 'application/json')
+		
+		user_clan = user.my_clan
+		clan = Clans.query.filter_by(clan_name = 'Rakdos').first()
+		self.assertEqual('Clan Rakdos added to User eric', response.data)
+		self.assertEqual(user_clan, clan.clan_id)
+
+		response = self.client.post('/addclan/eric', data = json.dumps(dict(clan = 'Gruul')),
+																			content_type = 'application/json')
+
+		self.assertEqual('You already have a clan (Rakdos)!', response.data)
+# -----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# SHOWING USER CLAN
+
+	def test_show_user_clan(self):
+
+		user = Users('eric','email@c.com')
+		db.session.add(user)
+		db.session.commit()
+
+		user_table = Users.query.filter_by(username = 'eric').first()
+		clan_table = Clans.query.filter_by(clan_name = 'Golgari').first()
+		clan_table.user_ref.append(user_table)
+
+		response = self.client.get('/clan/eric')
+
+		self.assertEqual('Your clan is Golgari', response.data)
+# -----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# SHOWING USER CLAN
+	
+	def test_show_clan_users(self):
+
+		user = Users('eric','email@c.com')
+		db.session.add(user)
+		db.session.commit()
+
+		user_table = Users.query.filter_by(username = 'eric').first()
+		clan_table = Clans.query.filter_by(clan_name = 'Selesnya').first()
+		clan_table.user_ref.append(user_table)
+
+		response = self.client.get('/clan/users/Selesnya')
+
+		flat_response = response.data.replace('\n', '')
+		flat_response = flat_response.replace(' ','')
+
+		r = json.dumps(dict(users = ['eric']))
+		r = r.replace(' ','')
+
+		self.assertEqual(r, flat_response)
+# -----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# UPDATING USER CLAN
+
+	def test_update_user_clan(self):
+
+		user = Users('eric','email@c.com')
+		db.session.add(user)
+		db.session.commit()
+
+		user_table = Users.query.filter_by(username = 'eric').first()
+		clan_table = Clans.query.filter_by(clan_name = 'Golgari').first()
+		clan_table.user_ref.append(user_table)
+		old_clan_name = clan_table.clan_name
+
+		response = self.client.put('/clan/update/eric', data = json.dumps(dict(clan = 'Rakdos')),
+																			   content_type = 'application/json')
+		new_clan_table = Clans.query.filter_by(clan_name = 'Rakdos').first()
+		new_clan_name = new_clan_table.clan_name
+		new_clan_id = new_clan_table.clan_id
+		user_clan = user_table.my_clan
+
+		self.assertEqual('You changed from %s to %s' % (old_clan_name, new_clan_name),response.data)
+		self.assertEqual(user_clan,new_clan_id)
+
 
 
 if __name__ == '__main__':
