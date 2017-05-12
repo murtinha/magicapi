@@ -1,0 +1,524 @@
+{
+  "Air Elemental": {
+    "layout": "normal",
+    "name": "Air Elemental",
+    "manaCost": "{3}{U}{U}",
+    "cmc": 5,
+    "colors": [
+      "Blue"
+    ],
+    "type": "Creature — Elemental",
+    "types": [
+      "Creature"
+    ],
+    "subtypes": [
+      "Elemental"
+    ],
+    "text": "Flying",
+    "power": "4",
+    "toughness": "4",
+    "imageName": "air elemental",
+    "colorIdentity": [
+      "U"
+    ]
+  },
+  "Animate Artifact": {
+    "layout": "normal",
+    "name": "Animate Artifact",
+    "manaCost": "{3}{U}",
+    "cmc": 4,
+    "colors": [
+      "Blue"
+    ],
+    "type": "Enchantment — Aura",
+    "types": [
+      "Enchantment"
+    ],
+    "subtypes": [
+      "Aura"
+    ],
+    "text": "Enchant artifact\nAs long as enchanted artifact isn't a creature, it's an artifact creature with power and toughness each equal to its converted mana cost.",
+    "imageName": "animate artifact",
+    "colorIdentity": [
+      "U"
+    ]
+  },
+  "Animate Dead": {
+    "layout": "normal",
+    "name": "Animate Dead",
+    "manaCost": "{1}{B}",
+    "cmc": 2,
+    "colors": [
+      "Black"
+    ],
+    "type": "Enchantment — Aura",
+    "types": [
+      "Enchantment"
+    ],
+    "subtypes": [
+      "Aura"
+    ],
+    "text": "Enchant creature card in a graveyard\nWhen Animate Dead enters the battlefield, if it's on the battlefield, it loses \"enchant creature card in a graveyard\" and gains \"enchant creature put onto the battlefield with Animate Dead.\" Return enchanted creature card to the battlefield under your control and attach Animate Dead to it. When Animate Dead leaves the battlefield, that creature's controller sacrifices it.\nEnchanted creature gets -1/-0.",
+    "imageName": "animate dead",
+    "colorIdentity": [
+      "B"
+    ]
+  },
+  "Animate Wall": {
+    "layout": "normal",
+    "name": "Animate Wall",
+    "manaCost": "{W}",
+    "cmc": 1,
+    "colors": [
+      "White"
+    ],
+    "type": "Enchantment — Aura",
+    "types": [
+      "Enchantment"
+    ],
+    "subtypes": [
+      "Aura"
+    ],
+    "text": "Enchant Wall\nEnchanted Wall can attack as though it didn't have defender.",
+    "imageName": "animate wall",
+    "colorIdentity": [
+      "W"
+    ]
+  },
+  "Armageddon": {
+    "layout": "normal",
+    "name": "Armageddon",
+    "manaCost": "{3}{W}",
+    "cmc": 4,
+    "colors": [
+      "White"
+    ],
+    "type": "Sorcery",
+    "types": [
+      "Sorcery"
+    ],
+    "text": "Destroy all lands.",
+    "imageName": "armageddon",
+    "colorIdentity": [
+      "W"
+    ]
+  },
+  "Aspect of Wolf": {
+    "layout": "normal",
+    "name": "Aspect of Wolf",
+    "manaCost": "{1}{G}",
+    "cmc": 2,
+    "colors": [
+      "Green"
+    ],
+    "type": "Enchantment — Aura",
+    "types": [
+      "Enchantment"
+    ],
+    "subtypes": [
+      "Aura"
+    ],
+    "text": "Enchant creature\nEnchanted creature gets +X/+Y, where X is half the number of Forests you control, rounded down, and Y is half the number of Forests you control, rounded up.",
+    "imageName": "aspect of wolf",
+    "colorIdentity": [
+      "G"
+    ]
+  },
+  "Bad Moon": {
+    "layout": "normal",
+    "name": "Bad Moon",
+    "manaCost": "{1}{B}",
+    "cmc": 2,
+    "colors": [
+      "Black"
+    ],
+    "type": "Enchantment",
+    "types": [
+      "Enchantment"
+    ],
+    "text": "Black creatures get +1/+1.",
+    "imageName": "bad moon",
+    "colorIdentity": [
+      "B"
+    ]
+  },
+  "Badlands": {
+    "layout": "normal",
+    "name": "Badlands",
+    "type": "Land — Swamp Mountain",
+    "types": [
+      "Land"
+    ],
+    "subtypes": [
+      "Swamp",
+      "Mountain"
+    ],
+    "text": "({T}: Add {B} or {R} to your mana pool.)",
+    "imageName": "badlands",
+    "colorIdentity": [
+      "B",
+      "R"
+    ]
+  },
+  "Balance": {
+    "layout": "normal",
+    "name": "Balance",
+    "manaCost": "{1}{W}",
+    "cmc": 2,
+    "colors": [
+      "White"
+    ],
+    "type": "Sorcery",
+    "types": [
+      "Sorcery"
+    ],
+    "text": "Each player chooses a number of lands he or she controls equal to the number of lands controlled by the player who controls the fewest, then sacrifices the rest. Players discard cards and sacrifice creatures the same way.",
+    "imageName": "balance",
+    "colorIdentity": [
+      "W"
+    ]
+  },
+  "Bayou": {
+    "layout": "normal",
+    "name": "Bayou",
+    "type": "Land — Swamp Forest",
+    "types": [
+      "Land"
+    ],
+    "subtypes": [
+      "Swamp",
+      "Forest"
+    ],
+    "text": "({T}: Add {B} or {G} to your mana pool.)",
+    "imageName": "bayou",
+    "colorIdentity": [
+      "B",
+      "G"
+    ]
+  },
+  "Benalish Hero": {
+    "layout": "normal",
+    "name": "Benalish Hero",
+    "manaCost": "{W}",
+    "cmc": 1,
+    "colors": [
+      "White"
+    ],
+    "type": "Creature — Human Soldier",
+    "types": [
+      "Creature"
+    ],
+    "subtypes": [
+      "Human",
+      "Soldier"
+    ],
+    "text": "Banding (Any creatures with banding, and up to one without, can attack in a band. Bands are blocked as a group. If any creatures with banding you control are blocking or being blocked by a creature, you divide that creature's combat damage, not its controller, among any of the creatures it's being blocked by or is blocking.)",
+    "power": "1",
+    "toughness": "1",
+    "imageName": "benalish hero",
+    "colorIdentity": [
+      "W"
+    ]
+  },
+  "Berserk": {
+    "layout": "normal",
+    "name": "Berserk",
+    "manaCost": "{G}",
+    "cmc": 1,
+    "colors": [
+      "Green"
+    ],
+    "type": "Instant",
+    "types": [
+      "Instant"
+    ],
+    "text": "Cast Berserk only before the combat damage step.\nTarget creature gains trample and gets +X/+0 until end of turn, where X is its power. At the beginning of the next end step, destroy that creature if it attacked this turn.",
+    "imageName": "berserk",
+    "colorIdentity": [
+      "G"
+    ]
+  },
+  "Black Lotus": {
+    "layout": "normal",
+    "name": "Black Lotus",
+    "manaCost": "{0}",
+    "cmc": 0,
+    "type": "Artifact",
+    "types": [
+      "Artifact"
+    ],
+    "text": "{T}, Sacrifice Black Lotus: Add three mana of any one color to your mana pool.",
+    "imageName": "black lotus"
+  },
+  "Black Vise": {
+    "layout": "normal",
+    "name": "Black Vise",
+    "manaCost": "{1}",
+    "cmc": 1,
+    "type": "Artifact",
+    "types": [
+      "Artifact"
+    ],
+    "text": "As Black Vise enters the battlefield, choose an opponent.\nAt the beginning of the chosen player's upkeep, Black Vise deals X damage to that player, where X is the number of cards in his or her hand minus 4.",
+    "imageName": "black vise"
+  },
+  "Black Ward": {
+    "layout": "normal",
+    "name": "Black Ward",
+    "manaCost": "{W}",
+    "cmc": 1,
+    "colors": [
+      "White"
+    ],
+    "type": "Enchantment — Aura",
+    "types": [
+      "Enchantment"
+    ],
+    "subtypes": [
+      "Aura"
+    ],
+    "text": "Enchant creature\nEnchanted creature has protection from black. This effect doesn't remove Black Ward.",
+    "imageName": "black ward",
+    "colorIdentity": [
+      "W"
+    ]
+  },
+  "Blaze of Glory": {
+    "layout": "normal",
+    "name": "Blaze of Glory",
+    "manaCost": "{W}",
+    "cmc": 1,
+    "colors": [
+      "White"
+    ],
+    "type": "Instant",
+    "types": [
+      "Instant"
+    ],
+    "text": "Cast Blaze of Glory only during combat before blockers are declared.\nTarget creature defending player controls can block any number of creatures this turn. It blocks each attacking creature this turn if able.",
+    "imageName": "blaze of glory",
+    "colorIdentity": [
+      "W"
+    ]
+  },
+  "Luxa River Shrine": {
+    "layout": "normal",
+    "name": "Luxa River Shrine",
+    "manaCost": "{3}",
+    "cmc": 3,
+    "type": "Artifact",
+    "types": [
+      "Artifact"
+    ],
+    "text": "{1}, {T}: You gain 1 life. Put a brick counter on Luxa River Shrine.\n{T}: You gain 2 life. Activate this ability only if there are three or more brick counters on Luxa River Shrine.",
+    "imageName": "luxa river shrine"
+  },
+  "Watchers of the Dead": {
+    "layout": "normal",
+    "name": "Watchers of the Dead",
+    "manaCost": "{2}",
+    "cmc": 2,
+    "type": "Artifact Creature — Cat",
+    "types": [
+      "Artifact",
+      "Creature"
+    ],
+    "subtypes": [
+      "Cat"
+    ],
+    "text": "Exile Watchers of the Dead: Each opponent chooses two cards in his or her graveyard and exiles the rest.",
+    "power": "2",
+    "toughness": "2",
+    "imageName": "watchers of the dead"
+  },
+  "Canyon Slough": {
+    "layout": "normal",
+    "name": "Canyon Slough",
+    "type": "Land — Swamp Mountain",
+    "types": [
+      "Land"
+    ],
+    "subtypes": [
+      "Swamp",
+      "Mountain"
+    ],
+    "text": "({T}: Add {B} or {R} to your mana pool.)\nCanyon Slough enters the battlefield tapped.\nCycling {2} ({2}, Discard this card: Draw a card.)",
+    "imageName": "canyon slough",
+    "colorIdentity": [
+      "B",
+      "R"
+    ]
+  },
+  "Painted Bluffs": {
+    "layout": "normal",
+    "name": "Painted Bluffs",
+    "type": "Land — Desert",
+    "types": [
+      "Land"
+    ],
+    "subtypes": [
+      "Desert"
+    ],
+    "text": "{T}: Add {C} to your mana pool.\n{1}, {T}: Add one mana of any color to your mana pool.",
+    "imageName": "painted bluffs"
+  },
+  "Scattered Groves": {
+    "layout": "normal",
+    "name": "Scattered Groves",
+    "type": "Land — Forest Plains",
+    "types": [
+      "Land"
+    ],
+    "subtypes": [
+      "Forest",
+      "Plains"
+    ],
+    "text": "({T}: Add {G} or {W} to your mana pool.)\nScattered Groves enters the battlefield tapped.\nCycling {2} ({2}, Discard this card: Draw a card.)",
+    "imageName": "scattered groves",
+    "colorIdentity": [
+      "W",
+      "G"
+    ]
+  },
+  "Sunscorched Desert": {
+    "layout": "normal",
+    "name": "Sunscorched Desert",
+    "type": "Land — Desert",
+    "types": [
+      "Land"
+    ],
+    "subtypes": [
+      "Desert"
+    ],
+    "text": "When Sunscorched Desert enters the battlefield, it deals 1 damage to target player.\n{T}: Add {C} to your mana pool.",
+    "imageName": "sunscorched desert"
+  },
+  "Companion of the Trials": {
+    "layout": "normal",
+    "name": "Companion of the Trials",
+    "manaCost": "{2}{W}",
+    "cmc": 3,
+    "colors": [
+      "White"
+    ],
+    "type": "Creature — Bird Soldier",
+    "types": [
+      "Creature"
+    ],
+    "subtypes": [
+      "Bird",
+      "Soldier"
+    ],
+    "text": "Flying\n{1}{W}: Untap target creature. Activate this ability only if you control a Gideon planeswalker.",
+    "power": "2",
+    "toughness": "2",
+    "imageName": "companion of the trials",
+    "colorIdentity": [
+      "W"
+    ]
+  },
+  "Graceful Cat": {
+    "layout": "normal",
+    "name": "Graceful Cat",
+    "manaCost": "{2}{W}",
+    "cmc": 3,
+    "colors": [
+      "White"
+    ],
+    "type": "Creature — Cat",
+    "types": [
+      "Creature"
+    ],
+    "subtypes": [
+      "Cat"
+    ],
+    "text": "Whenever Graceful Cat attacks, it gets +1/+1 until end of turn.",
+    "power": "2",
+    "toughness": "2",
+    "imageName": "graceful cat",
+    "colorIdentity": [
+      "W"
+    ]
+  },
+  "Heartmender": {
+    "layout": "normal",
+    "name": "Heartmender",
+    "manaCost": "{2}{G/W}{G/W}",
+    "cmc": 4,
+    "colors": [
+      "White",
+      "Green"
+    ],
+    "type": "Creature — Elemental",
+    "types": [
+      "Creature"
+    ],
+    "subtypes": [
+      "Elemental"
+    ],
+    "text": "At the beginning of your upkeep, remove a -1/-1 counter from each creature you control.\nPersist (When this creature dies, if it had no -1/-1 counters on it, return it to the battlefield under its owner's control with a -1/-1 counter on it.)",
+    "power": "2",
+    "toughness": "2",
+    "imageName": "heartmender",
+    "colorIdentity": [
+      "W",
+      "G"
+    ]
+  },
+  "Stream Hopper": {
+    "layout": "normal",
+    "name": "Stream Hopper",
+    "manaCost": "{U/R}",
+    "cmc": 1,
+    "colors": [
+      "Blue",
+      "Red"
+    ],
+    "type": "Creature — Goblin",
+    "types": [
+      "Creature"
+    ],
+    "subtypes": [
+      "Goblin"
+    ],
+    "text": "{U/R}: Stream Hopper gains flying until end of turn.",
+    "power": "1",
+    "toughness": "1",
+    "imageName": "stream hopper",
+    "colorIdentity": [
+      "U",
+      "R"
+    ]
+  },
+    "Kaalia of the Vast": {
+    "layout": "normal",
+    "name": "Kaalia of the Vast",
+    "manaCost": "{1}{W}{B}{R}",
+    "cmc": 4,
+    "colors": [
+      "White",
+      "Black",
+      "Red"
+    ],
+    "type": "Legendary Creature — Human Cleric",
+    "supertypes": [
+      "Legendary"
+    ],
+    "types": [
+      "Creature"
+    ],
+    "subtypes": [
+      "Human",
+      "Cleric"
+    ],
+    "text": "Flying\nWhenever Kaalia of the Vast attacks an opponent, you may put an Angel, Demon, or Dragon creature card from your hand onto the battlefield tapped and attacking that opponent.",
+    "power": "2",
+    "toughness": "2",
+    "imageName": "kaalia of the vast",
+    "colorIdentity": [
+      "W",
+      "B",
+      "R"
+    ]
+  }
+}
