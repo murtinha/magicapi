@@ -61,7 +61,7 @@ class MyTest(BaseTestCase):
 		
 		flat_response = response.data.replace('\n', '')
 		flat_response = flat_response.replace(' ', '')
-		r = json.dumps(dict(names = ["Berserk", "Aspect of Wolf", "Birds of Paradise"]))
+		r = json.dumps(dict(names = ["Berserk", "Aspect of Wolf"]))
 		r = r.replace(' ', '')
 		self.assertEqual(r, flat_response)
 # -----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -92,7 +92,7 @@ class MyTest(BaseTestCase):
 
 		flat_response = response.data.replace('\n', '')
 		flat_response = flat_response.replace(' ', '')
-		r = json.dumps(dict(names = ["Air Elemental","Birds of Paradise","Companion of the Trials"]))
+		r = json.dumps(dict(names = ["Air Elemental","Companion of the Trials","Kaalia of the Vast","Stream Hopper"]))
 		r = r.replace(' ', '')
 		self.assertEqual(r,flat_response)
 # -----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -230,18 +230,18 @@ class MyTest(BaseTestCase):
 		user = Users('eric','email@c.com')
 		db.session.add(user)
 		db.session.commit()
-		card_1 = Cards.query.filter_by(name = 'Cascading Cataracts').first()
+		card_1 = Cards.query.filter_by(name = 'Black Lotus').first()
 		card_2 = Cards.query.filter_by(name = 'Animate Dead').first()
 		card_1.owner.append(user)
 		card_2.owner.append(user)
 		db.session.commit()
 
-		response_1 = self.client.get('/manacost/eric/?manacost=')
+		response_1 = self.client.get('/manacost/eric/?manacost=0')
 		response_2 = self.client.get('/manacost/eric/?manacost=B1')
 
 		flat_response_1 = response_1.data.replace('\n', '')
 		flat_response_1 = flat_response_1.replace(' ','')
-		r_1 = json.dumps(dict(names=['Cascading Cataracts']))
+		r_1 = json.dumps(dict(names=['Black Lotus']))
 		r_1 = r_1.replace(' ', '')
 
 		flat_response_2 = response_2.data.replace('\n', '')

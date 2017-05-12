@@ -387,15 +387,15 @@ def show_user_card_by_text(username):
 def show_user_card_by_subtypes(username):
 
 	subtypes = request.args.get('subtypes','')
-	subtypes_lits = subtypes.split(',')
+	subtypes_list = subtypes.split(',')
 	user = Users.query.filter_by(username = username).first()
 	cardnames = []
 	subtype_filter= 0 # Guarantee that all subtypes are in the card at once
 	for card in user.user_cards:
 		tostring = []
-		for subtype in card.subtypes_list:
+		for subtype in card.subtypes_ref:
 			tostring.append(str(subtype))
-		for subtype in subtypes:
+		for subtype in subtypes_list:
  			if subtype in tostring: 
  				subtype_filter = 1
  			else:
@@ -421,8 +421,11 @@ def show_user_card_by_mana_color(username):
 		colors_list = sorted(colors_list)
 	user = Users.query.filter_by(username = username).first()
 	for eachcard in user.user_cards:		
+		tostring = []
+		for color in eachcard.colors_ref:
+			tostring.append(str(color))
 		if eachcard.mana_cost == manacost_sorted:
-			if eachcard.colors == colors_list:
+			if tostring == colors_list:
 				cardnames.append(eachcard.name)
 	return jsonify(dict(names = cardnames))
 # --------------------------------------------------------------
