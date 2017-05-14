@@ -57,13 +57,22 @@ class MyTest(BaseTestCase):
 	
 	def test_show_cards_by_color(self):
 		
-		response = self.client.get('/colors/?colors=Green')
+		response_1 = self.client.get('/colors/?colors=Green')
 		
-		flat_response = response.data.replace('\n', '')
-		flat_response = flat_response.replace(' ', '')
-		r = json.dumps(dict(names = ["Berserk", "Aspect of Wolf"]))
-		r = r.replace(' ', '')
-		self.assertEqual(r, flat_response)
+		flat_response_1 = response_1.data.replace('\n', '')
+		flat_response_1 = flat_response_1.replace(' ', '')
+		r_1 = json.dumps(dict(names = ["Berserk", "Aspect of Wolf"]))
+		r_1 = r_1.replace(' ', '')
+
+		response_2 = self.client.get('/colors/?colors=Red,Blue')
+		
+		flat_response_2 = response_2.data.replace('\n', '')
+		flat_response_2 = flat_response_2.replace(' ', '')
+		r_2 = json.dumps(dict(names = ["Stream Hopper"]))
+		r_2 = r_2.replace(' ', '')
+
+		self.assertEqual(r_1, flat_response_1)
+		self.assertEqual(r_2, flat_response_2)
 # -----------------------------------------------------------------------------------------------------------------------------------------------------------
   
 # SHOW CARD USERS
