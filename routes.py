@@ -46,14 +46,13 @@ def show_card_colors():
   	page = int(request.args.get('page', 1))
   	last_card = (page*100) + 1
   	if page > 1:
-  		first_card = last_card - 99
+  		first_card = last_card - 100
   	else:
-  		first_card = 1
+  		first_card = 0
  	colors_list = colors.split(',')
   	cardnames = []
 	color_column = Colors.query.filter_by(color = colors_list[0]).first()
 	for card in color_column.colorcards[first_card:last_card]:
-		count += 1
   		tostring = []
 		for color in card.colors_ref:
 			tostring.append(str(color))
@@ -125,13 +124,11 @@ def show_card_by_subtypes():
 
 # SHOWING CARDS BY SUBTYPES,COLOR,TEXT
 
-@app.route('/subtypes/colors/text/')
+@app.route('/colors/text/')
 def show_card_by_sub_color_text():
 
 	args = request.args
-	subtypes = request.args.get('subtypes','')
 	colors = request.args.get('colors','')
-	subtypes_list = subtypes.split(',')
 	colors_list = colors.split(',')
 	if len(colors_list) > 1:
 		colors_list = sorted(colors_list)
@@ -142,28 +139,18 @@ def show_card_by_sub_color_text():
 	cardnames = []
 	subtype_filter = 0
 	for card in color_column.colorcards:
-		subtype_tostring = []
 		color_tostring = []
-		for subtype in card.subtypes_ref:
-			subtype_tostring.append(str(subtype))
 		for color in card.colors_ref:
 			color_tostring.append(str(color))
 		if sorted(color_tostring) == colors_list:
-			for subtype in subtypes_list:
-				if subtype in subtype_tostring:
-					subtype_filter = 1
+			for word in text_list:
+				if word in card.text.lower():
+					card_filter_text = 1
 				else:
-					subtype_filter = 0
+					card_filter_text = 0
 					break
-			if subtype_filter == 1:
-				for word in text_list:
-					if word in card.text.lower():
-						card_filter_text = 1
-					else:
-						card_filter_text = 0
-						break
-				if card_filter_text == 1:
-					cardnames.append(card.name)
+			if card_filter_text == 1:
+				cardnames.append(card.name)
 	return jsonify(dict(names = cardnames))
 
 
@@ -439,11 +426,9 @@ def show_user_card_by_mana_color(username):
 
 # SHOWING CARDS BY SUBTYPES,COLOR,TEXT
 
-@app.route('/subtypes/colors/text/<username>/')
+@app.route('/colors/text/<username>/')
 def show_user_card_by_sub_color_text(username):
 
-	subtypes = request.args.get('subtypes','')
-	subtypes_list = subtypes.split(',')
 	colors = request.args.get('colors','')
 	colors_list = colors.split(',')
 	if len(colors_list) > 1:
@@ -453,30 +438,19 @@ def show_user_card_by_sub_color_text(username):
 	user = Users.query.filter_by(username = username).first()
 	card_filter_text = 0 
 	cardnames = []
-	subtype_filter = 0
 	for card in user.user_cards:
-		subtype_tostring = []
 		color_tostring = []
-		for subtype in card.subtypes_ref:
-			subtype_tostring.append(str(subtype))
 		for color in card.colors_ref:
 			color_tostring.append(str(color))
 		if sorted(color_tostring) == colors_list:
-			for subtype in subtypes_list:
-				if subtype in subtype_tostring:
-					subtype_filter = 1
+			for word in text_list:
+				if word in card.text.lower():
+					card_filter_text = 1
 				else:
-					subtype_filter = 0
+					card_filter_text = 0
 					break
-			if subtype_filter == 1:
-				for word in text_list:
-					if word in card.text.lower():
-						card_filter_text = 1
-					else:
-						card_filter_text = 0
-						break
-				if card_filter_text == 1:
-					cardnames.append(card.name)
+			if card_filter_text == 1:
+				cardnames.append(card.name)
 	return jsonify(dict(names = cardnames))
 # --------------------------------------------------------------
 

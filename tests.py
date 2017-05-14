@@ -112,9 +112,9 @@ class MyTest(BaseTestCase):
 
 # SHOW CARDS BY SUBTYPES,COLOR,TEXT
 
-	def test_show_cards_by_sub_color_text(self):
+	def test_show_cards_by_color_text(self):
 
-		response = self.client.get('/subtypes/colors/text/?subtypes=Bird&colors=White&text=flying')
+		response = self.client.get('/colors/text/?&colors=White&text=flying')
 
 
 		flat_response = response.data.replace('\n', '')
@@ -375,7 +375,7 @@ class MyTest(BaseTestCase):
 
 # SHOWING CARDS BY SUBTYPES,COLOR,TEXT
 
-	def test_show_user_cards_by_sub_colors_text(self):
+	def test_show_user_cards_by_colors_text(self):
 
 		user = Users('eric','email@c.com')
 		db.session.add(user)
@@ -384,7 +384,7 @@ class MyTest(BaseTestCase):
 		card_1.owner.append(user)
 
 
-		response = self.client.get('/subtypes/colors/text/eric/?subtypes=empty&colors=empty&text=life')
+		response = self.client.get('/colors/text/eric/?colors=empty&text=life')
 		flat_response = response.data.replace('\n', '')
 		flat_response = flat_response.replace(' ', '')
 
