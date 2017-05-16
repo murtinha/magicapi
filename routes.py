@@ -468,14 +468,18 @@ def delete_user(username):
 
 # DELETING CARD FROM USER
 
-# @app.route('/delete/card/<username>')
-# def delete_card_from_user(username):
+@app.route('/delete/card/<username>')
+def delete_card_from_user(username):
 	
-# 	  user_input = request.get_json()
-# 	  cardname = user_input['name']
-# 	user = Users.query.filter_by(username = username).first()
-# 	print user.user_cards
-# 	return 'ok'	
+	user_input = request.get_json()
+	cardname = user_input['name']
+	user = Users.query.filter_by(username = username).first()
+	for card in user.user_cards:
+		if card.name == cardname:
+			user.user_cards.remove(card)
+			db.session.commit()
+			break
+	return 'ok'	
 
 
 # --------------------------------------------------------------
