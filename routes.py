@@ -474,12 +474,16 @@ def delete_card_from_user(username):
 	user_input = request.get_json()
 	cardname = user_input['name']
 	user = Users.query.filter_by(username = username).first()
+	card_check = 0
 	for card in user.user_cards:
 		if card.name == cardname:
+			card_check = 1
 			user.user_cards.remove(card)
 			db.session.commit()
-			break
-	return 'ok'	
+		return '%s removed from user %s' % (cardname, user.username)			
+	if card_check == 0 :
+		return '%s was not found in user %s' % (cardname, user.username)
+		
 
 
 # --------------------------------------------------------------
