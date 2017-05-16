@@ -436,24 +436,29 @@ class MyTest(BaseTestCase):
 
 # DELETING CARD FROM USER
 
-	# def test_delete_user_card(self):
+	def test_delete_user_card(self):
 
-	# 	user_1 = Users('eric','email@c.com')
-	# 	db.session.add(user_1)
-	# 	db.session.commit()
-	# 	card = Cards.query.filter_by(name = 'Luxa River Shrine').first()
-	# 	card.owner.append(user_1)
+		user_1 = Users('eric','email@c.com')
+		db.session.add(user_1)
+		db.session.commit()
+		card = Cards.query.filter_by(name = 'Luxa River Shrine').first()
+		card.owner.append(user_1)
 
-	# 	user_2 = Users('bela','belaemail@c.com')
-	# 	db.session.add(user_2)
-	# 	db.session.commit()
-	# 	card.owner.append(user_2)
+		user_2 = Users('bela','belaemail@c.com')
+		db.session.add(user_2)
+		db.session.commit()
+		card.owner.append(user_2)
 
-	# 	respose = self.client.delete('/delete/card/eric', data = json.dumps(dict(name = 'Luxa River Shrine')),
-	# 																		    content_type = 'application/json')
+		response = self.client.delete('/delete/card/eric', data = json.dumps(dict(name = 'Luxa River Shrine')),
+																			    content_type = 'application/json')
 		
-	# 	self.assertEqual('Luxa River Shrine removed from user eric', response.data)
-	# 	self.assertEqual()
+		user_2_t = Users.query.filter_by(username = 'bela').first()
+		user_1_t = Users.query.filter_by(username = 'eric').first()
+		user_2_cards = user_2_t.user_cards
+		user_1_cards = user_1_t.user_cards
+		self.assertEqual('Luxa River Shrine removed from user eric', response.data)
+		self.assertEqual(user_2_cards[0].name, 'Luxa River Shrine')
+		self.assertEqual(user_1_cards, [])
 
 # -----------------------------------------------------------------------------------------------------------------------------------------------------------
 

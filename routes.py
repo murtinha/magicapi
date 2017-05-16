@@ -502,7 +502,7 @@ def delete_user(username):
 
 # DELETING CARD FROM USER
 
-@app.route('/delete/card/<username>')
+@app.route('/delete/card/<username>', methods = ['DELETE'])
 def delete_card_from_user(username):
 	
 	user_input = request.get_json()
