@@ -22,6 +22,7 @@ def show_card_by_name():
 	card = Cards.query.filter_by(name = name).first()
 	card_name = card.name
 	card_manacost = card.mana_cost
+	card_url = card.url
 	card_text = card.text
 	if type(card.colors_ref) != "None":
 		card_colors = str(card.colors_ref)
@@ -30,11 +31,12 @@ def show_card_by_name():
 	card_types = str(card.types_ref)
 	card_subtypes = str(card.subtypes_ref)
 	return jsonify(dict(name = card_name,
-						   mana_cost = card_manacost,
-						   colors = card_colors,
-						   types = card_types,
-						   subtypes = card_subtypes,
-						   text = card_text))
+						mana_cost = card_manacost,
+						colors = card_colors,
+						types = card_types,
+						subtypes = card_subtypes,
+						img_url = card_url,
+						text = card_text))
 # --------------------------------------------------------------
 
 # SHOWING CARDS BY COLOR
@@ -51,6 +53,7 @@ def show_card_colors():
   		first_card = 0
  	colors_list = colors.split(',')
   	cardnames = []
+  	cardurl = []
 	color_column = Colors.query.filter_by(color = colors_list[0]).first()
 	for card in color_column.colorcards[first_card:last_card]:
   		tostring = []
@@ -58,7 +61,8 @@ def show_card_colors():
 			tostring.append(str(color))
 		if sorted(tostring) == sorted(colors_list):
 			cardnames.append(card.name)
-	return jsonify(dict(names = cardnames))
+			cardurl.append(card.img_url)
+	return jsonify(dict(names = cardnames, url = cardurl))
 # --------------------------------------------------------------
 
 # SHOW CARD USERS
@@ -83,6 +87,7 @@ def show_card_by_text():
 	text_list = text.split(',')
 	cards = Cards.query.all()
 	cardnames = []
+	cardurl = []
 	card_filter = 0
 	for card in cards:
 		for word in text_list:
@@ -93,7 +98,8 @@ def show_card_by_text():
 				break
 		if card_filter == 1:
 			cardnames.append(card.name)
-	return jsonify(dict(names = cardnames))
+			cardurl.append(card.img_url)
+	return jsonify(dict(names = cardnames, url = cardurl))
 # --------------------------------------------------------------
 
 # SHOWING CARDS BY SUBTYPES
@@ -105,6 +111,7 @@ def show_card_by_subtypes():
 	subtypes_list = subtypes.split(',')
 	subtype_column = Subtypes.query.filter_by(subtype = subtypes_list[0]).first()
 	cardnames = []
+	cardurl = []
 	subtype_filter= 0 # Guarantee that all subtypes are in the card at once
 	for card in subtype_column.subtypescards:
 		tostring = []
@@ -118,7 +125,8 @@ def show_card_by_subtypes():
 				break
 		if subtype_filter == 1:
 			cardnames.append(card.name)
-	return jsonify(dict(names = cardnames))
+			cardurl.append(card.img_url)
+	return jsonify(dict(names = cardnames, url = cardurl))
 	
 # --------------------------------------------------------------
 
@@ -137,6 +145,7 @@ def show_card_by_sub_color_text():
 	color_column = Colors.query.filter_by(color = colors_list[0]).first()
 	card_filter_text = 0 
 	cardnames = []
+	cardurl = []
 	subtype_filter = 0
 	for card in color_column.colorcards:
 		color_tostring = []
@@ -151,7 +160,8 @@ def show_card_by_sub_color_text():
 					break
 			if card_filter_text == 1:
 				cardnames.append(card.name)
-	return jsonify(dict(names = cardnames))
+				cardurl.append(card.img_url)
+	return jsonify(dict(names = cardnames, url = cardurl))
 
 
 # --------------------------------------------------------------
@@ -165,10 +175,12 @@ def show_card_by_manacost():
 	manacost_sorted = sorted(manacost)
 	manacost_sorted = ''.join(manacost_sorted)
 	cardnames = []
+	cardurl = []
 	cards = Cards.query.filter_by(mana_cost = manacost_sorted).all()
 	for card in cards:
 		cardnames.append(card.name)
-	return jsonify(dict(names = cardnames))
+		cardurl.append(card.img_url)
+	return jsonify(dict(names = cardnames,url = cardurl))
 # --------------------------------------------------------------
 
 # SHOWING CARDS BY TYPES
@@ -180,6 +192,7 @@ def show_card_by_types():
 	types_list = types.split(',')
 	type_column = Types.query.filter_by(types = types_list[0]).first()
 	cardnames = []
+	cardurl = []
 	type_filter = 0
 	for card in type_column.typecards:
 		tostring = []
@@ -193,7 +206,8 @@ def show_card_by_types():
 				break
 		if type_filter == 1:
 			cardnames.append(card.name)
-	return jsonify(dict(names = cardnames))
+			cardurl.append(card.img_url)
+	return jsonify(dict(names = cardnames, url = cardurl))
 
 
 # --------------------------------------------------------------
@@ -206,6 +220,7 @@ def show_card_by_mana_color():
 
 	manacost = request.args.get('manacost','')
 	cardnames = []
+	cardurl = []
 	colors = request.args.get('colors','')
 	colors_list = colors.split(',')
 	if len(colors_list) > 1:
@@ -217,7 +232,8 @@ def show_card_by_mana_color():
 			tostring.append(str(color))
 		if sorted(tostring) == colors_list:
 			cardnames.append(card.name)
-	return jsonify(dict(names = cardnames))
+			cardurl.append(card.img_url)
+	return jsonify(dict(names = cardnames, url = cardurl))
 # --------------------------------------------------------------
 
 
@@ -261,10 +277,12 @@ def add_card_to_user(username):
 @app.route('/cards/<username>')
 def show_user_cards(username):
 	cardsnames = []
+	cardurl = []
 	user = Users.query.filter_by(username = username).first()
 	for card in user.user_cards:
 		cardsnames.append(card.name)
-	return jsonify(dict(names = cardsnames))
+		cardurl.append(card.img_url)
+	return jsonify(dict(names = cardsnames, url = cardurl))
 # --------------------------------------------------------------
 
 # SHOWING CARDS BY MANACOST
@@ -276,11 +294,13 @@ def show_user_card_by_manacost(username):
 	manacost_sorted = sorted(manacost)
 	manacost_sorted = ''.join(manacost_sorted)
 	cardnames = []
+	cardurl = []
 	user = Users.query.filter_by(username = username).first()
 	for card in user.user_cards:
 		if card.mana_cost == manacost_sorted:
 			cardnames.append(card.name)
-	return jsonify(dict(names = cardnames))
+			cardurl.append(card.img_url)
+	return jsonify(dict(names = cardnames, url = cardurl))
 # --------------------------------------------------------------
 
 # SHOWING CARDS BY NAME
@@ -294,6 +314,7 @@ def show_user_card_by_name(username):
 		if(card.name == name):
 			card_name = card.name
 			card_manacost = card.mana_cost
+			card_url = card.img_url
 			card_text = card.text
 			card_colors = str(card.colors_ref)
 			card_types = str(card.types_ref)
@@ -304,6 +325,7 @@ def show_user_card_by_name(username):
 						   colors = card_colors,
 						   types = card_types,
 						   subtypes = card_subtypes,
+						   url = card_url,
 						   text = card_text))
 # --------------------------------------------------------------
 
@@ -317,6 +339,7 @@ def show_user_card_colors(username):
   	if len(colors_list) > 1:
   		colors_list = sorted(colors_list)
   	cardnames = []
+  	cardurl = []
   	user = Users.query.filter_by(username = username).first()
 	for card in user.user_cards:
   		tostring = []
@@ -324,7 +347,8 @@ def show_user_card_colors(username):
 			tostring.append(str(color))
 		if sorted(tostring) == colors_list:
 			cardnames.append(card.name)
-	return jsonify(dict(names = cardnames))
+			cardurl.append(card.img_url)
+	return jsonify(dict(names = cardnames, url = cardurl))
 
 # --------------------------------------------------------------
 
@@ -337,6 +361,7 @@ def show_user_card_by_types(username):
 	types_list = types.split(',')
 	user = Users.query.filter_by(username = username).first()
 	cardnames = []
+	cardurl = []
 	type_filter = 0
 	for card in user.user_cards:
 		tostring = []
@@ -350,7 +375,8 @@ def show_user_card_by_types(username):
 				break
 		if type_filter == 1:
 			cardnames.append(card.name)
-	return jsonify(dict(names = cardnames))
+			cardurl.append(card.img_url)
+	return jsonify(dict(names = cardnames, url = cardurl))
 # --------------------------------------------------------------
 
 # SHOWING CARDS BY TEXT
@@ -362,6 +388,7 @@ def show_user_card_by_text(username):
 	text_list = text.split(',')
 	user = Users.query.filter_by(username = username).first()
 	cardnames = []
+	cardurl = []
 	card_filter = 0
 	for card in user.user_cards:
 		for word in text_list:
@@ -372,7 +399,8 @@ def show_user_card_by_text(username):
 				break
 		if card_filter == 1:
 			cardnames.append(card.name)
-	return jsonify(dict(names = cardnames))
+			cardurl.append(card.img_url)
+	return jsonify(dict(names = cardnames, url = cardurl))
 # --------------------------------------------------------------
 
 # SHOWING CARDS BY SUBTYPES
@@ -384,6 +412,7 @@ def show_user_card_by_subtypes(username):
 	subtypes_list = subtypes.split(',')
 	user = Users.query.filter_by(username = username).first()
 	cardnames = []
+	cardurl = []
 	subtype_filter= 0 # Guarantee that all subtypes are in the card at once
 	for card in user.user_cards:
 		tostring = []
@@ -397,7 +426,8 @@ def show_user_card_by_subtypes(username):
  				break
  		if subtype_filter == 1:
  			cardnames.append(card.name)
-	return jsonify(dict(names = cardnames))
+ 			cardurl.append(card.img_url)
+	return jsonify(dict(names = cardnames, url =cardurl))
 # --------------------------------------------------------------
 
 # SHOWING CARDS BY MANACOST AND COLOR
@@ -409,6 +439,7 @@ def show_user_card_by_mana_color(username):
 	manacost_sorted = sorted(manacost)
 	manacost_sorted = ''.join(manacost_sorted)
 	cardnames = []
+	cardurl = []
 	colors = request.args.get('colors','')
 	colors_list = colors.split(',')
 	if len(colors_list) > 1:
@@ -421,7 +452,8 @@ def show_user_card_by_mana_color(username):
 		if eachcard.mana_cost == manacost_sorted:
 			if tostring == colors_list:
 				cardnames.append(eachcard.name)
-	return jsonify(dict(names = cardnames))
+				cardurl.append(eachcard.img_url)
+	return jsonify(dict(names = cardnames, url = cardurl))
 # --------------------------------------------------------------
 
 # SHOWING CARDS BY SUBTYPES,COLOR,TEXT
@@ -438,6 +470,7 @@ def show_user_card_by_sub_color_text(username):
 	user = Users.query.filter_by(username = username).first()
 	card_filter_text = 0 
 	cardnames = []
+	cardurl = []
 	for card in user.user_cards:
 		color_tostring = []
 		for color in card.colors_ref:
@@ -451,7 +484,8 @@ def show_user_card_by_sub_color_text(username):
 					break
 			if card_filter_text == 1:
 				cardnames.append(card.name)
-	return jsonify(dict(names = cardnames))
+				cardurl.append(card.img_url)
+	return jsonify(dict(names = cardnames, url = cardurl))
 # --------------------------------------------------------------
 
 # DELETING USER
