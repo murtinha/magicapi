@@ -47,6 +47,7 @@ class MyTest(BaseTestCase):
                             mana_cost="3UU",
                             name="Air Elemental",
                             subtypes="[Elemental]",
+                            img_url = "https://magic.objects.liquidweb.services/en13ddajvc.jpg",
                             text="Flying",
                             types= "[Creature]"))
 		r = r.replace(' ', '')
@@ -61,14 +62,14 @@ class MyTest(BaseTestCase):
 		
 		flat_response_1 = response_1.data.replace('\n', '')
 		flat_response_1 = flat_response_1.replace(' ', '')
-		r_1 = json.dumps(dict(names = ["Berserk", "Aspect of Wolf"]))
+		r_1 = json.dumps(dict(names = ["Berserk", "Aspect of Wolf"], url = ["https://magic.objects.liquidweb.services/en175cn2.jpg","https://magic.objects.liquidweb.services/en23v5e.jpg"]))
 		r_1 = r_1.replace(' ', '')
 
 		response_2 = self.client.get('/colors/?colors=Red,Blue')
 		
 		flat_response_2 = response_2.data.replace('\n', '')
 		flat_response_2 = flat_response_2.replace(' ', '')
-		r_2 = json.dumps(dict(names = ["Stream Hopper"]))
+		r_2 = json.dumps(dict(names = ["Stream Hopper"], url = ["https://magic.objects.liquidweb.services/pt113eve.jpg"]))
 		r_2 = r_2.replace(' ', '')
 
 		self.assertEqual(r_1, flat_response_1)
@@ -101,7 +102,8 @@ class MyTest(BaseTestCase):
 
 		flat_response = response.data.replace('\n', '')
 		flat_response = flat_response.replace(' ', '')
-		r = json.dumps(dict(names = ["Air Elemental","Companion of the Trials","Kaalia of the Vast","Stream Hopper"]))
+		r = json.dumps(dict(names = ["Air Elemental","Companion of the Trials","Kaalia of the Vast","Stream Hopper"],
+				            url = ["https://magic.objects.liquidweb.services/en13ddajvc.jpg","https://magic.objects.liquidweb.services/en271akh.jpg","https://magic.objects.liquidweb.services/en9cma.jpg","https://magic.objects.liquidweb.services/pt113eve.jpg"]))
 		r = r.replace(' ', '')
 		self.assertEqual(r,flat_response)
 # -----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -114,7 +116,8 @@ class MyTest(BaseTestCase):
 
 		flat_response = response.data.replace('\n', '')
 		flat_response = flat_response.replace(' ', '')
-		r = json.dumps(dict(names = ["Animate Wall","Aspect of Wolf","Black Ward","Animate Dead","Animate Artifact"]))
+		r = json.dumps(dict(names = ["Animate Wall","Aspect of Wolf","Black Ward","Animate Dead","Animate Artifact"],
+							url = ["https://magic.objects.liquidweb.services/en2med.jpg","https://magic.objects.liquidweb.services/en23v5e.jpg","https://magic.objects.liquidweb.services/pt31v4eb.jpg","https://magic.objects.liquidweb.services/en78ema.jpg","https://magic.objects.liquidweb.services/en38me4.jpg"]))
 		r = r.replace(' ', '')
 		self.assertEqual(r,flat_response)
 # -----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -128,7 +131,7 @@ class MyTest(BaseTestCase):
 
 		flat_response = response.data.replace('\n', '')
 		flat_response = flat_response.replace(' ', '')
-		r = json.dumps(dict(names = ["Companion of the Trials"]))
+		r = json.dumps(dict(names = ["Companion of the Trials"], url = ["https://magic.objects.liquidweb.services/en271akh.jpg"]))
 		r = r.replace(' ', '')
 		self.assertEqual(r,flat_response)
 # -----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -142,7 +145,7 @@ class MyTest(BaseTestCase):
 
 		flat_response = response.data.replace('\n', '')
 		flat_response = flat_response.replace(' ', '')
-		r = json.dumps(dict(names = ["Air Elemental"]))
+		r = json.dumps(dict(names = ["Air Elemental"], url = ["https://magic.objects.liquidweb.services/en13ddajvc.jpg"]))
 		r = r.replace(' ', '')
 		self.assertEqual(r ,flat_response)
 # -----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -156,7 +159,7 @@ class MyTest(BaseTestCase):
 
 		flat_response = response.data.replace('\n', '')
 		flat_response = flat_response.replace(' ', '')
-		r = json.dumps(dict(names = ["Watchers of the Dead"]))
+		r = json.dumps(dict(names = ["Watchers of the Dead"], url = ["https://magic.objects.liquidweb.services/pt238akh.jpg"]))
 		r = r.replace(' ', '')
 		self.assertEqual(r, flat_response)
 # -----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -170,7 +173,8 @@ class MyTest(BaseTestCase):
 
 		flat_response = response.data.replace('\n', '')
 		flat_response = flat_response.replace(' ', '')
-		r = json.dumps(dict(names = ["Animate Wall","Benalish Hero","Black Ward","Blaze of Glory"]))
+		r = json.dumps(dict(names = ["Animate Wall","Benalish Hero","Black Ward","Blaze of Glory"],
+							url = ["https://magic.objects.liquidweb.services/en2med.jpg","https://magic.objects.liquidweb.services/en5med.jpg","https://magic.objects.liquidweb.services/pt31v4eb.jpg","https://magic.objects.liquidweb.services/en7me4.jpg"]))
 		r = r.replace(' ', '')
 		self.assertEqual(r,flat_response)
 # -----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -227,7 +231,7 @@ class MyTest(BaseTestCase):
 		flat_response = response.data.replace('\n','')
 		flat_response = flat_response.replace(' ','')
 
-		r = json.dumps(dict(names = ['Graceful Cat']))
+		r = json.dumps(dict(names = ['Graceful Cat'], url = ["https://magic.objects.liquidweb.services/pt273akh.jpg"]))
 		r = r.replace(' ','')
 		self.assertEqual(r, flat_response)
 # -----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -250,12 +254,12 @@ class MyTest(BaseTestCase):
 
 		flat_response_1 = response_1.data.replace('\n', '')
 		flat_response_1 = flat_response_1.replace(' ','')
-		r_1 = json.dumps(dict(names=['Black Lotus']))
+		r_1 = json.dumps(dict(names=['Black Lotus'], url = ['https://magic.objects.liquidweb.services/en4vma.jpg']))
 		r_1 = r_1.replace(' ', '')
 
 		flat_response_2 = response_2.data.replace('\n', '')
 		flat_response_2 = flat_response_2.replace(' ','')
-		r_2 = json.dumps(dict(names=['Animate Dead']))
+		r_2 = json.dumps(dict(names=['Animate Dead'], url = ['https://magic.objects.liquidweb.services/en78ema.jpg']))
 		r_2 = r_2.replace(' ', '')
 
 		self.assertEqual(r_1, flat_response_1)
@@ -280,7 +284,8 @@ class MyTest(BaseTestCase):
                             name="Armageddon",
                             subtypes="[empty]",
                             text="Destroy all lands.",
-                            types= "[Sorcery]"))
+                            types= "[Sorcery]",
+                            img_url = "https://magic.objects.liquidweb.services/en1v14.jpg"))
 		r = r.replace(' ', '')
 		self.assertEqual(r, flat_response)
 # -----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -299,7 +304,7 @@ class MyTest(BaseTestCase):
 		flat_response = response.data.replace('\n', '')
 		flat_response = flat_response.replace(' ', '')
 
-		r = json.dumps(dict(names = ['Bad Moon']))
+		r = json.dumps(dict(names = ['Bad Moon'], url = ["https://magic.objects.liquidweb.services/en48ddagvl.jpg"]))
 		r = r.replace(' ', '')
 		self.assertEqual(r, flat_response)
 # -----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -318,7 +323,7 @@ class MyTest(BaseTestCase):
 		flat_response = response.data.replace('\n', '')
 		flat_response = flat_response.replace(' ', '')
 
-		r = json.dumps(dict(names = ['Balance']))
+		r = json.dumps(dict(names = ['Balance'], url = ['https://magic.objects.liquidweb.services/en2ema.jpg']))
 		r = r.replace(' ','')
 		self.assertEqual(r, flat_response)
 # -----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -337,7 +342,7 @@ class MyTest(BaseTestCase):
 		flat_response = response.data.replace('\n', '')
 		flat_response = flat_response.replace(' ', '')
 
-		r = json.dumps(dict(names = ['Armageddon']))
+		r = json.dumps(dict(names = ['Armageddon'], url = ['https://magic.objects.liquidweb.services/en1v14.jpg']))
 		r = r.replace(' ','')
 		self.assertEqual(r, flat_response)
 # -----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -358,7 +363,7 @@ class MyTest(BaseTestCase):
 		flat_response = response.data.replace('\n', '')
 		flat_response = flat_response.replace(' ', '')
 
-		r = json.dumps(dict(names = ['Badlands']))
+		r = json.dumps(dict(names = ['Badlands'], url = ['https://magic.objects.liquidweb.services/en291vma.jpg']))
 		r = r.replace(' ','')
 		self.assertEqual(r, flat_response)
 # -----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -377,7 +382,7 @@ class MyTest(BaseTestCase):
 		flat_response = response.data.replace('\n', '')
 		flat_response = flat_response.replace(' ', '')
 
-		r = json.dumps(dict(names = ['Black Vise']))
+		r = json.dumps(dict(names = ['Black Vise'], url = ['https://magic.objects.liquidweb.services/en33smpskld.jpg']))
 		r = r.replace(' ','')
 		self.assertEqual(r, flat_response)
 # -----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -397,12 +402,12 @@ class MyTest(BaseTestCase):
 		flat_response = response.data.replace('\n', '')
 		flat_response = flat_response.replace(' ', '')
 
-		r = json.dumps(dict(names = ['Luxa River Shrine']))
+		r = json.dumps(dict(names = ['Luxa River Shrine'], url = ['https://magic.objects.liquidweb.services/pt232akh.jpg']))
 		r = r.replace(' ','')
 		self.assertEqual(r, flat_response)
 # -----------------------------------------------------------------------------------------------------------------------------------------------------------
 
-# SHOWING CARDS BY SUBTYPES,COLOR,TEXT
+# DELETING USER
 
 	def test_delete_user(self):
 
@@ -427,6 +432,29 @@ class MyTest(BaseTestCase):
 		self.assertEqual(None, deleted_user)
 		self.assertEqual(no_user_counter,0)
 		self.assertEqual('Luxa River Shrine', remaining_card_name)
+# -----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# DELETING CARD FROM USER
+
+	# def test_delete_user_card(self):
+
+	# 	user_1 = Users('eric','email@c.com')
+	# 	db.session.add(user_1)
+	# 	db.session.commit()
+	# 	card = Cards.query.filter_by(name = 'Luxa River Shrine').first()
+	# 	card.owner.append(user_1)
+
+	# 	user_2 = Users('bela','belaemail@c.com')
+	# 	db.session.add(user_2)
+	# 	db.session.commit()
+	# 	card.owner.append(user_2)
+
+	# 	respose = self.client.delete('/delete/card/eric', data = json.dumps(dict(name = 'Luxa River Shrine')),
+	# 																		    content_type = 'application/json')
+		
+	# 	self.assertEqual('Luxa River Shrine removed from user eric', response.data)
+	# 	self.assertEqual()
+
 # -----------------------------------------------------------------------------------------------------------------------------------------------------------
 
 # ADDING USER TO CLAN

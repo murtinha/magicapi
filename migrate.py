@@ -1,26 +1,27 @@
 from app import app,db
 from tables import Cards,Colors,Types,Subtypes, Clans
-from loadjsoncards import data
+from jsoncards import data_json
 from allsingletypes import single_types, single_subtypes
 import re
 # --------------------------------------------------------------
 
 # THIS ROUTE IS ONLY FOR POPULATING DB WITH CARD FROM JSONFILE
 
-types_flatten = single_types(data)
-subtypes_flatten = single_subtypes(data)
+types_flatten = single_types(data_json)
+subtypes_flatten = single_subtypes(data_json)
 
 # CARDS
  	
-for card in data.values():
+for card in data_json.values():
 	card_name = card.get('name', '')
 	card_mana_cost = re.sub("\W", "",card.get('manaCost', ''))
 	if card_mana_cost != '':
 		card_mana_cost = sorted(card_mana_cost)
 		card_mana_cost = ''.join(card_mana_cost)
+	card_url = card.get('url','')
 	card_text = card.get('text', '')
 	dbcreate = Cards(card_name,card_mana_cost, 	  		             
- 		             card_text)
+ 		             card_url,card_text)
   	db.session.add(dbcreate)
  	db.session.commit()
 # --------------------------------------------------------------
@@ -39,7 +40,7 @@ for color in colors:
 	db.session.add(dbcreate)
 	db.session.commit()
 
-for card in data.values():
+for card in data_json.values():
 	colors = card.get('colors', [])
 	name = card.get('name','')
 	table_card = Cards.query.filter_by(name = name).first()
@@ -79,7 +80,7 @@ for type in types_flatten:
 	db.session.add(dbcreate)
 	db.session.commit()
 
-for card in data.values():
+for card in data_json.values():
 	types = card.get('types', [])
 	name = card.get('name', '')
 	table_card = Cards.query.filter_by(name = name).first()
@@ -101,7 +102,7 @@ for subtype in subtypes_flatten:
 	db.session.commit()
 
 
-for card in data.values():
+for card in data_json.values():
 	subtypes = card.get('subtypes', [])
 	name = card.get('name', '')
 	table_card = Cards.query.filter_by(name = name).first()

@@ -22,7 +22,7 @@ def show_card_by_name():
 	card = Cards.query.filter_by(name = name).first()
 	card_name = card.name
 	card_manacost = card.mana_cost
-	card_url = card.url
+	card_url = card.img_url
 	card_text = card.text
 	if type(card.colors_ref) != "None":
 		card_colors = str(card.colors_ref)
@@ -325,7 +325,7 @@ def show_user_card_by_name(username):
 						   colors = card_colors,
 						   types = card_types,
 						   subtypes = card_subtypes,
-						   url = card_url,
+						   img_url = card_url,
 						   text = card_text))
 # --------------------------------------------------------------
 

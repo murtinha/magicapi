@@ -39,9 +39,9 @@ def populate_tests():
 		if card_mana_cost != '':
 			card_mana_cost = sorted(card_mana_cost)
 			card_mana_cost = ''.join(card_mana_cost)
+		card_url = card.get('url','')
 		card_text = card.get('text', '')
-		dbcreate = Cards(card_name,card_mana_cost, 	  		             
- 		             card_text)
+		dbcreate = Cards(card_name,card_mana_cost,card_url,card_text)
   		db.session.add(dbcreate)
  		db.session.commit()
 

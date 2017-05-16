@@ -77,15 +77,17 @@ class Cards(db.Model):
 	card_id = db.Column(db.Integer, primary_key = True)
 	name = db.Column(db.String, unique = True)
 	mana_cost = db.Column(db.String)
+	img_url = db.Column(db.String)
 	colors_ref = db.relationship('Colors', secondary = card_colors_relationship, backref = db.backref('colorcards', lazy = 'dynamic'))
 	types_ref = db.relationship('Types', secondary = card_types_relationship, backref = db.backref('typecards', lazy = 'dynamic'))
 	subtypes_ref = db.relationship('Subtypes', secondary = card_subtypes_relationship, backref = db.backref('subtypescards', lazy = 'dynamic'))
 	text = db.Column(db.String)
 
-	def __init__(self,name, mana_cost,text):
+	def __init__(self,name, mana_cost,img_url,text):
 		
 		self.name = name
 		self.mana_cost = mana_cost
+		self.img_url = img_url
 		self.text = text
 
 	def __repr__(self):
@@ -93,6 +95,7 @@ class Cards(db.Model):
 		return json.dumps(dict(card_id = self.card_id,
 							   name = self.name,
 							   mana_cost = self.mana_cost,
+							   img_url = self.img_url,
 							   text = self.text))
 
 # TABLE FOR USERS

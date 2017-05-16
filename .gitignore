@@ -12,3 +12,9 @@ migrate.pyc
 allsingletypes.pyc
 tests.pyc
 populatetest.pyc
+importedjson.pyc
+urlcrawler.py
+urlcrawler.pyc
+jsoncards.pyc
+tests/
+docs/
