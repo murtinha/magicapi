@@ -16,7 +16,7 @@ def health_check():
 
 @app.route('/')
 def welcome_page():
-	return 'WELCOME'
+	return 'WELCOME TO MAGICAPI'
 
 # SHOWING CARDS BY NAME
 
@@ -67,7 +67,6 @@ def show_card_colors():
 		if sorted(tostring) == sorted(colors_list):
 			cardnames.append(card.name)
 			cardurl.append(card.img_url)
-
 	return jsonify(dict(names = cardnames[first_card:last_card], url = cardurl[first_card:last_card]))
 # --------------------------------------------------------------
 
