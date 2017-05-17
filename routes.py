@@ -13,6 +13,11 @@ def health_check():
 # TABLE CARDS ROUTES
 # --------------------------------------------------------------
 
+
+@app.route('/')
+def welcome_page():
+	return 'WELCOME'
+
 # SHOWING CARDS BY NAME
 
 @app.route('/name/', methods = ['GET'])
