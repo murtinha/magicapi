@@ -54,26 +54,28 @@ def show_card_colors():
   	last_card = (page*100) + 1
  	colors_list = colors.split(',')
 	color_column = Colors.query.filter_by(color = colors_list[0]).first()
-  	print len(list(color_column.colorcards))
-  	if len(list(color_column.colorcards)) > 100:
-  		if page > 1:
-  			first_card = last_card - 100
-  		else:
-  			first_card = 0
-  	else:
-  		first_card = 0
-  		last_card = len(list(color_column.colorcards))-1
-
+	if page > 1:
+		first_card = last_card - 100
+	else:
+		first_card = 0
   	cardnames = []
   	cardurl = []
-	for card in color_column.colorcards[first_card:last_card]:
+	for card in color_column.colorcards:
   		tostring = []
 		for color in card.colors_ref:
 			tostring.append(str(color))
 		if sorted(tostring) == sorted(colors_list):
 			cardnames.append(card.name)
 			cardurl.append(card.img_url)
-	return jsonify(dict(names = cardnames, url = cardurl))
+	if len(cardnames) > 100:
+		cardnames_paginate = cardnames[first_card:last_card]
+		cardurl_paginate = cardurl[first_card:last_card]
+	else:
+		lastcard = len(cardnames) - 1
+		firstcard = 0
+		cardnames_paginate = cardnames[firstcard:lastcard]
+		cardurl_paginate = cardurl[firstcard:lastcard]
+	return jsonify(dict(names = cardnames_paginate, url = cardurl_paginate))
 # --------------------------------------------------------------
 
 # SHOW CARD USERS
