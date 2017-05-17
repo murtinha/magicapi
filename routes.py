@@ -67,15 +67,8 @@ def show_card_colors():
 		if sorted(tostring) == sorted(colors_list):
 			cardnames.append(card.name)
 			cardurl.append(card.img_url)
-	if len(cardnames) > 100:
-		cardnames_paginate = cardnames[first_card:last_card]
-		cardurl_paginate = cardurl[first_card:last_card]
-	else:
-		lastcard = len(cardnames) - 1
-		firstcard = 0
-		cardnames_paginate = cardnames[firstcard:lastcard]
-		cardurl_paginate = cardurl[firstcard:lastcard]
-	return jsonify(dict(names = cardnames_paginate, url = cardurl_paginate))
+
+	return jsonify(dict(names = cardnames[first_card:last_card], url = cardurl[first_card:last_card]))
 # --------------------------------------------------------------
 
 # SHOW CARD USERS
