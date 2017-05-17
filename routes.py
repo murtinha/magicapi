@@ -52,14 +52,18 @@ def show_card_colors():
   	colors = request.args.get('colors', '')
   	page = int(request.args.get('page', 1))
   	last_card = (page*100) + 1
-  	if page > 1:
-  		first_card = last_card - 100
+ 	colors_list = colors.split(',')
+	color_column = Colors.query.filter_by(color = colors_list[0]).first()
+  	if len(color_column.colorcards) > 100:
+  		if page > 1:
+  			first_card = last_card - 100
+  		else:
+  			first_card = 0
   	else:
   		first_card = 0
- 	colors_list = colors.split(',')
+  		last_card = len(color_column.colorcards)-1
   	cardnames = []
   	cardurl = []
-	color_column = Colors.query.filter_by(color = colors_list[0]).first()
 	for card in color_column.colorcards[first_card:last_card]:
   		tostring = []
 		for color in card.colors_ref:
