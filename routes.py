@@ -1,5 +1,5 @@
 from app import app,db
-from tables import Cards, Users, Colors, Types, Subtypes, Clans, card_colors_relationship
+from tables import Cards, Users, Colors, Types, Subtypes, Clans
 from flask import request, jsonify
 
 
@@ -51,23 +51,28 @@ def show_card_colors():
 
   	colors = request.args.get('colors', '')
   	page = int(request.args.get('page', 1))
-  	last_card = (page*100) + 1
  	colors_list = colors.split(',')
-	cards = Colors.query.filter_by(color = colors_list[0]).first()
-	if page > 1:
-		first_card = last_card - 100
-	else:
-		first_card = 0
-  	cardnames = []
-  	cardurl = []
-	for card in cards.colorcards:
-  		tostring = []
-		for color in card.colors_ref:
-			tostring.append(str(color))
-		if sorted(tostring) == sorted(colors_list):
-			cardnames.append(card.name)
-			cardurl.append(card.img_url)
-	return jsonify(dict(names = cardnames[first_card:last_card], url = cardurl[first_card:last_card]))
+  	last_card = (page*100) + 1
+	card_names = db.engine.execute('select name from cards where card_id in(select card_id from colors_relationship where id in (1,2) group by card_id having count(card_id)>1)')
+	cards_l_name = []
+	card_l_url = []
+	for card_name in card_names:
+		print card_name
+	return 'ok'
+	# if page > 1:
+	# 	first_card = last_card - 100
+	# else:
+	# 	first_card = 0
+  	# cardnames = []
+  	# cardurl = []
+	# for card in cards:
+  	# 	tostring = []
+	# 	for color in card.colors_ref:
+	# 		tostring.append(str(color))
+	# 	if sorted(tostring) == sorted(colors_list):
+	# 		cardnames.append(card.name)
+	# 		cardurl.append(card.img_url)
+	# return jsonify(dict(names = cardnames[first_card:last_card], url = cardurl[first_card:last_card]))
 # --------------------------------------------------------------
 
 # SHOW CARD USERS
@@ -95,8 +100,9 @@ def show_card_by_text():
 	cardurl = []
 	card_filter = 0
 	for card in cards:
+		split_text = (card.text.lower()).split()
 		for word in text_list:
-			if word in card.text.lower():
+			if word in split_text:
 				card_filter = 1
 			else:
 				card_filter = 0
@@ -157,8 +163,9 @@ def show_card_by_sub_color_text():
 		for color in card.colors_ref:
 			color_tostring.append(str(color))
 		if sorted(color_tostring) == colors_list:
+			split_text = (card.text.lower()).split()
 			for word in text_list:
-				if word in card.text.lower():
+				if word in split_text:
 					card_filter_text = 1
 				else:
 					card_filter_text = 0
@@ -396,8 +403,9 @@ def show_user_card_by_text(username):
 	cardurl = []
 	card_filter = 0
 	for card in user.user_cards:
+		split_text = (card.text.lower()).split()
 		for word in text_list:
-			if word in card.text.lower():
+			if word in split_text:
 				card_filter = 1
 			else:
 				card_filter = 0
@@ -461,7 +469,7 @@ def show_user_card_by_mana_color(username):
 	return jsonify(dict(names = cardnames, url = cardurl))
 # --------------------------------------------------------------
 
-# SHOWING CARDS BY SUBTYPES,COLOR,TEXT
+# SHOWING CARDS BY COLOR,TEXT
 
 @app.route('/colors/text/<username>/')
 def show_user_card_by_sub_color_text(username):
@@ -481,8 +489,9 @@ def show_user_card_by_sub_color_text(username):
 		for color in card.colors_ref:
 			color_tostring.append(str(color))
 		if sorted(color_tostring) == colors_list:
+			split_text = (card.text.lower()).split()
 			for word in text_list:
-				if word in card.text.lower():
+				if word in split_text:
 					card_filter_text = 1
 				else:
 					card_filter_text = 0
