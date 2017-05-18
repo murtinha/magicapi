@@ -53,14 +53,14 @@ def show_card_colors():
   	page = int(request.args.get('page', 1))
   	last_card = (page*100) + 1
  	colors_list = colors.split(',')
-	cards = Colors.query.filter_by(color = colors_list[0].first())
+	cards = Colors.query.filter_by(color = colors_list[0]).first()
 	if page > 1:
 		first_card = last_card - 100
 	else:
 		first_card = 0
   	cardnames = []
   	cardurl = []
-	for card in cards:
+	for card in cards.colorcards:
   		tostring = []
 		for color in card.colors_ref:
 			tostring.append(str(color))
