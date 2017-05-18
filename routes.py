@@ -53,24 +53,21 @@ def show_card_colors():
   	page = int(request.args.get('page', 1))
   	last_card = (page*100) + 1
  	colors_list = colors.split(',')
-	card_names = db.engine.execute('select name from cards where card_id in(select card_id from colors_relationship where id in (1,2) group by card_id having count(card_id)>1)')
-	for i in card_names:
-		print i
-	return 'ok'
-	# if page > 1:
-	# 	first_card = last_card - 100
-	# else:
-	# 	first_card = 0
- #  	cardnames = []
- #  	cardurl = []
-	# for card in cards:
- #  		tostring = []
-	# 	for color in card.colors_ref:
-	# 		tostring.append(str(color))
-	# 	if sorted(tostring) == sorted(colors_list):
-	# 		cardnames.append(card.name)
-	# 		cardurl.append(card.img_url)
-	# return jsonify(dict(names = cardnames[first_card:last_card], url = cardurl[first_card:last_card]))
+	cards = Colors.query.filter_by(color = colors_list[0].first())
+	if page > 1:
+		first_card = last_card - 100
+	else:
+		first_card = 0
+  	cardnames = []
+  	cardurl = []
+	for card in cards:
+  		tostring = []
+		for color in card.colors_ref:
+			tostring.append(str(color))
+		if sorted(tostring) == sorted(colors_list):
+			cardnames.append(card.name)
+			cardurl.append(card.img_url)
+	return jsonify(dict(names = cardnames[first_card:last_card], url = cardurl[first_card:last_card]))
 # --------------------------------------------------------------
 
 # SHOW CARD USERS
