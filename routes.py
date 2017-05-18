@@ -53,12 +53,18 @@ def show_card_colors():
   	page = int(request.args.get('page', 1))
  	colors_list = colors.split(',')
   	last_card = (page*100) + 1
-	card_names = db.engine.execute('select name from cards where card_id in(select card_id from colors_relationship where id in (1,2) group by card_id having count(card_id)>1)')
+	card_names = db.engine.execute('select * from cards where card_id in(select card_id from colors_relationship where id in (1,2) group by card_id having count(card_id)>1)')
 	cards_l_name = []
-	card_l_url = []
+	cards_l_url = []
 	for card_name in card_names:
-		print card_name
-	return 'ok'
+		tostring = []
+		card_t = Cards.query.filter_by(name = card_name.name).first()
+		for color in card_t.colors_ref:
+			tostring.append(str(color))
+		if sorted(tostring) == sorted(colors_list):
+			cards_l_name.append(card_t.name)
+			cards_l_url.append(card_t.img_url)
+	return jsonify(dict(names = cards_l_name, url = cards_l_url))
 	# if page > 1:
 	# 	first_card = last_card - 100
 	# else:
@@ -141,7 +147,7 @@ def show_card_by_subtypes():
 	
 # --------------------------------------------------------------
 
-# SHOWING CARDS BY SUBTYPES,COLOR,TEXT
+# SHOWING CARDS BY COLOR,TEXT
 
 @app.route('/colors/text/')
 def show_card_by_sub_color_text():
