@@ -1,7 +1,7 @@
 from app import app,db
 from tables import Cards, Users, Colors, Types, Subtypes, Clans
 from flask import request, jsonify
-
+import re
 
 # HEALTH-CHECK
 
@@ -73,20 +73,20 @@ def show_card_colors():
 			cards_l_name.append(card_t.name)
 			cards_l_url.append(card_t.img_url)
 	return jsonify(dict(names = cards_l_name, url = cards_l_url))
-	if page > 1:
-		first_card = last_card - 100
-	else:
-		first_card = 0
-  	cardnames = []
-  	cardurl = []
-	for card in cards:
-  		tostring = []
-		for color in card.colors_ref:
-			tostring.append(str(color))
-		if sorted(tostring) == sorted(colors_list):
-			cardnames.append(card.name)
-			cardurl.append(card.img_url)
-	return jsonify(dict(names = cardnames[first_card:last_card], url = cardurl[first_card:last_card]))
+	# if page > 1:
+	# 	first_card = last_card - 100
+	# else:
+	# 	first_card = 0
+ #  	cardnames = []
+ #  	cardurl = []
+	# for card in cards:
+ #  		tostring = []
+	# 	for color in card.colors_ref:
+	# 		tostring.append(str(color))
+	# 	if sorted(tostring) == sorted(colors_list):
+	# 		cardnames.append(card.name)
+	# 		cardurl.append(card.img_url)
+	# return jsonify(dict(names = cardnames[first_card:last_card], url = cardurl[first_card:last_card]))
 # --------------------------------------------------------------
 
 # SHOW CARD USERS
@@ -114,7 +114,7 @@ def show_card_by_text():
 	cardurl = []
 	card_filter = 0
 	for card in cards:
-		split_text = (card.text.lower()).split()
+		split_text = re.split(r'\s+|[,;.-]\s*', card.text.lower())
 		for word in text_list:
 			if word in split_text:
 				card_filter = 1
@@ -177,7 +177,7 @@ def show_card_by_sub_color_text():
 		for color in card.colors_ref:
 			color_tostring.append(str(color))
 		if sorted(color_tostring) == colors_list:
-			split_text = (card.text.lower()).split()
+			split_text = re.split(r'\s+|[,;.-]\s*', card.text.lower())
 			for word in text_list:
 				if word in split_text:
 					card_filter_text = 1
@@ -417,7 +417,7 @@ def show_user_card_by_text(username):
 	cardurl = []
 	card_filter = 0
 	for card in user.user_cards:
-		split_text = (card.text.lower()).split()
+		split_text = re.split(r'\s+|[,;.-]\s*', card.text.lower())
 		for word in text_list:
 			if word in split_text:
 				card_filter = 1
@@ -503,7 +503,7 @@ def show_user_card_by_sub_color_text(username):
 		for color in card.colors_ref:
 			color_tostring.append(str(color))
 		if sorted(color_tostring) == colors_list:
-			split_text = (card.text.lower()).split()
+			split_text = re.split(r'\s+|[,;.-]\s*', card.text.lower())
 			for word in text_list:
 				if word in split_text:
 					card_filter_text = 1
