@@ -55,5 +55,5 @@ build:
           python tests.py
 deploy:
   steps:
-    - deply-heroku:
+    - deploy-heroku:
         key-name: herokukey
