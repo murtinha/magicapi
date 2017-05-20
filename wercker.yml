@@ -56,6 +56,6 @@ build:
 deploy:
   steps:
     - heroku-deploy:
-        key-name: magicapikey_PUBLIC_PRIVATE
+        key-name: magicapikey
         user: ericmurta@hotmail.com
         app-name: magicapi
