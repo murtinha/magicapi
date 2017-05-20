@@ -56,6 +56,6 @@ build:
 deploy:
   steps:
     - heroku-deploy:
-        key: ptn06JpZ8l
+        key: SHA256:OSt0N6JHL9QVhUfTgDckh+TvFwNMJK2YM8u0ay+tvLc
         user: ericmurta@hotmail.com
         app-name: magicapi
