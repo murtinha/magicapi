@@ -55,5 +55,7 @@ build:
           python tests.py
 deploy:
   steps:
-    - deploy-heroku:
+    - heroku-deploy:
         key-name: herokukey
+        user: ericmurta@hotmail.com
+        app-name: magicapi
