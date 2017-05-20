@@ -16,7 +16,7 @@ def health_check():
 
 @app.route('/')
 def welcome_page():
-	return 'WELCOME USER'
+	return 'WELCOME TO MAGICAPI'
 
 # SHOWING CARDS BY NAME
 
