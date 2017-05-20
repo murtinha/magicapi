@@ -2,7 +2,6 @@ An API to interact with (JSON) Magic Cards written in Python and Flask using MTG
 
 I went a little further and crawled the image's url from ligamagic.com.br using BeautifulSoup and urllib. There are only 2 cards that the image is from another website, Verdant Automaton from mtggoldfish and Onward/Victory from wizards.
 
-I also left all Avatar named cards without an image.
 
 All cards are in storage DB. Besides the Cards table there are Colors,Subtypes,Types,Clans and Users table. You can create your own user and add/delete any cards you want to it. You can also add a Clan to your user, remove our update it.
 
