@@ -4,7 +4,7 @@ I went a little further and crawled the image's url from ligamagic.com.br using 
 
 I also left all Avatar named cards without an image.
 
-All cards are in storage DB. Besides the Cards table there are Colors,Subtypes,Types,Clans and Users table. You can create your own user and add/delete any cards you want to it. You can also add a Clan to your user.
+All cards are in storage DB. Besides the Cards table there are Colors,Subtypes,Types,Clans and Users table. You can create your own user and add/delete any cards you want to it. You can also add a Clan to your user, remove it our update it.
 
 All POST and PUT request have to be in JSON format.
 
