@@ -53,10 +53,18 @@ def show_card_colors():
   	page = int(request.args.get('page', 1))
  	colors_list = colors.split(',')
   	last_card = (page*100) + 1
-	card_names = db.engine.execute('select * from cards where card_id in(select card_id from colors_relationship where id in (1,2) group by card_id having count(card_id)>1)')
+  	colors_id = []
+ #  	for color in colors_list:
+ #  		color_t = Colors.query.filter_by(color = color).first()
+ #  		colors_id.append(color_t.id)
+	# card_names = db.engine.execute('select * from cards where card_id in(select card_id from colors_relationship where id in (1,2) group by card_id having count(card_id)=2)')
+	# for card in card_names:
+	# 	print card
+	# return 'ok'
+	card_names = Colors.query.filter_by(color = colors_list[0]).first()
 	cards_l_name = []
 	cards_l_url = []
-	for card_name in card_names:
+	for card_name in card_names.colorcards:
 		tostring = []
 		card_t = Cards.query.filter_by(name = card_name.name).first()
 		for color in card_t.colors_ref:
@@ -65,20 +73,20 @@ def show_card_colors():
 			cards_l_name.append(card_t.name)
 			cards_l_url.append(card_t.img_url)
 	return jsonify(dict(names = cards_l_name, url = cards_l_url))
-	# if page > 1:
-	# 	first_card = last_card - 100
-	# else:
-	# 	first_card = 0
-  	# cardnames = []
-  	# cardurl = []
-	# for card in cards:
-  	# 	tostring = []
-	# 	for color in card.colors_ref:
-	# 		tostring.append(str(color))
-	# 	if sorted(tostring) == sorted(colors_list):
-	# 		cardnames.append(card.name)
-	# 		cardurl.append(card.img_url)
-	# return jsonify(dict(names = cardnames[first_card:last_card], url = cardurl[first_card:last_card]))
+	if page > 1:
+		first_card = last_card - 100
+	else:
+		first_card = 0
+  	cardnames = []
+  	cardurl = []
+	for card in cards:
+  		tostring = []
+		for color in card.colors_ref:
+			tostring.append(str(color))
+		if sorted(tostring) == sorted(colors_list):
+			cardnames.append(card.name)
+			cardurl.append(card.img_url)
+	return jsonify(dict(names = cardnames[first_card:last_card], url = cardurl[first_card:last_card]))
 # --------------------------------------------------------------
 
 # SHOW CARD USERS
