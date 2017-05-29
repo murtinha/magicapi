@@ -11,6 +11,13 @@ def create_app():
     db.init_app(app)
     return app
 
+def create_test_app():
+	app = Flask(__name__)
+	app.config.from_object('magic.config.TestConfig')
+	db.init_app(app)
+	app.app_context().push()
+	return app
+
 app = create_app()
 
-__all__ = [ 'app', 'db' ]
+__all__ = [ 'app', 'db']
