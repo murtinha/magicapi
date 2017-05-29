@@ -1,5 +1,5 @@
 from magic import *
-from models.tables import Cards, Users, Colors, Types, Subtypes, Clans
+from magic.models.tables import Cards, Users, Colors, Types, Subtypes, Clans
 from flask import request, jsonify
 import re
 

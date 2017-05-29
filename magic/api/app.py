@@ -4,7 +4,7 @@ from magic import *
 
 migrate = Migrate(app,db)
 
-from models.tables import Cards,Users, Colors, Types, Subtypes, Clans
+from magic.models.tables import Cards,Users, Colors, Types, Subtypes, Clans
 import routes
 
 # To initialize db, open python shell 
