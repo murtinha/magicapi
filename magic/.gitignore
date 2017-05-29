@@ -1,7 +1,6 @@
 /venv
 api/app.pyc
 api/routes.pyc
-api/__init__.pyc
 /migrations/env.pyc
 /migrations/versions/48827d58a2e7_.pyc
 config.pyc
@@ -17,6 +16,3 @@ tests/scripts/__init__.pyc
 tests/demo.json
 tests/tests.pyc
 __init__.pyc
-scripts/__init__.pyc
-models/__init__.pyc
-tests/__init__.pyc
