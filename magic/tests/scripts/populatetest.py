@@ -5,7 +5,7 @@ import re
 
 # GETTING CARDS FROM JSON
 
-with open('demo.json') as json_data:
+with open('magic/tests/demo.json') as json_data:
 	json_test_cards = json.load(json_data, strict = False)
 
 
