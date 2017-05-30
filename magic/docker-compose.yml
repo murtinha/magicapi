@@ -2,8 +2,6 @@ version: '2'
 services:
   web:
     build: .
-    environment:
-     - PYTHONPATH=./api/app
     ports:
      - "5000:5000"
     volumes:
