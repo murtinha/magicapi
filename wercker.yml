@@ -52,7 +52,7 @@ build:
     - script:
         name: python testing
         code: |
-          python tests.py
+          python magic/tests/tests.py
 deploy:
   steps:
     - heroku-deploy:
