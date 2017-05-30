@@ -3,7 +3,7 @@ services:
   web:
     build: .
     environment:
-     - PYTHONPATH=./ magic/api/app
+     - PYTHONPATH=./api/app
     ports:
      - "5000:5000"
     volumes:
