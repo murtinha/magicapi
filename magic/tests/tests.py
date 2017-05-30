@@ -4,7 +4,6 @@ from magic.models.tables import Cards, Users, Clans, Colors, Types, Subtypes
 import unittest
 from flask_testing import TestCase
 from scripts.populatetest import populate_tests, map_tests
-import magic.api.routes
 
 class BaseTestCase(TestCase):
 
