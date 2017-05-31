@@ -13,4 +13,4 @@ from magic.models.tables import Cards,Users, Colors, Types, Subtypes, Clans
 #flask db upgrade
 
 if __name__ == "__main__":
-	app.run()
+	app.run(host='0.0.0.0')
