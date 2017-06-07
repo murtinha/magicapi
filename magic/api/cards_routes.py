@@ -1,7 +1,8 @@
 from magic import db
 from magic.models.tables import Cards, Users, Colors, Types, Subtypes
-from flask import request, jsonify, Blueprint
+from flask import request, jsonify, Blueprint, json
 import re
+import requests
 
 cards_blueprint = Blueprint('cards_routes', __name__)
 
@@ -27,24 +28,14 @@ def welcome_page():
 def show_card_by_name():
 
 	name = request.args.get('name','')
-	card = Cards.query.filter_by(name = name).first()
-	card_name = card.name
-	card_manacost = card.mana_cost
-	card_url = card.img_url
-	card_text = card.text
-	if type(card.colors_ref) != "None":
-		card_colors = str(card.colors_ref)
-	else:
-		card_colors = "None"
-	card_types = str(card.types_ref)
-	card_subtypes = str(card.subtypes_ref)
-	return jsonify(dict(name = card_name,
-						mana_cost = card_manacost,
-						colors = card_colors,
-						types = card_types,
-						subtypes = card_subtypes,
-						img_url = card_url,
-						text = card_text))
+	body = json.dumps({ "query": { "match": { "name": name}} })
+	url = 'http://127.0.0.1:9200/magic/card/_search'
+	headers = { 'Content-Type': 'application/json'}
+	r = requests.get(url, headers = headers, data = body)
+	response =  json.loads(r.text).get('hits')
+	hits = response['hits'][0]
+	data = hits.get('_source')
+	return jsonify(data)
 # --------------------------------------------------------------
 
 # SHOWING CARDS BY COLOR
@@ -200,6 +191,22 @@ def show_card_by_types():
 
 	types = request.args.get('types','')
 	types_list = types.split(',')
+	# match = ''
+	# for type in types_list:
+
+	# 	match += str({"match": { "types": str(type)}})
+	
+	# body = '{ "query": { "bool": { {} } } }'.format(match)
+	# print match
+	# return 'ok'	
+	# url = 'http://127.0.0.1:9200/magic/card/_search'
+	# headers = { 'Content-Type': 'application/json'}
+	# r = requests.get(url, headers = headers, data = json.dumps(body))
+	# response =  json.loads(r.text).get('hits')
+	# hits = response['hits'][0]
+	# data = hits.get('_source')
+	# return jsonify(data)
+
 	type_column = Types.query.filter_by(types = types_list[0]).first()
 	cardnames = []
 	cardurl = []
