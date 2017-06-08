@@ -190,42 +190,19 @@ def show_card_by_manacost():
 def show_card_by_types():
 
 	types = request.args.get('types','')
-	types_list = types.split(',')
-	# match = ''
-	# for type in types_list:
-
-	# 	match += str({"match": { "types": str(type)}})
-	
-	# body = '{ "query": { "bool": { {} } } }'.format(match)
-	# print match
-	# return 'ok'	
-	# url = 'http://127.0.0.1:9200/magic/card/_search'
-	# headers = { 'Content-Type': 'application/json'}
-	# r = requests.get(url, headers = headers, data = json.dumps(body))
-	# response =  json.loads(r.text).get('hits')
-	# hits = response['hits'][0]
-	# data = hits.get('_source')
-	# return jsonify(data)
-
-	type_column = Types.query.filter_by(types = types_list[0]).first()
-	cardnames = []
-	cardurl = []
-	type_filter = 0
-	for card in type_column.typecards:
-		tostring = []
-		for type in card.types_ref:
-			tostring.append(str(type))
-		for type in types_list:
-			if type in tostring:
-				type_filter = 1
-			else:
-				type_filter = 0
-				break
-		if type_filter == 1:
-			cardnames.append(card.name)
-			cardurl.append(card.img_url)
-	return jsonify(dict(names = cardnames, url = cardurl))
-
+	body = { "from": 0,"size": 50, "query": { "match": { "types":{ "query": types, "operator":"and"}}}}
+	url = 'http://127.0.0.1:9200/magic/card/_search'
+	headers = { 'Content-Type': 'application/json'}
+	r = requests.get(url, headers = headers, data = json.dumps(body))
+	response =  json.loads(r.text).get('hits')
+	hits = response['hits']
+	cards = []
+	for hit in hits:
+		source = hit.get('_source', '')
+		name = source.get('name', '')
+		url = source.get('url', '')
+		cards.append(dict(name = name, url = url))
+	return jsonify(cards)
 
 # --------------------------------------------------------------
 
