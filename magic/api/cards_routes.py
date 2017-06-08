@@ -83,23 +83,24 @@ def show_card_users():
 def show_card_by_text():
 
 	text = request.args.get('text','')
-	text_list = text.split(',')
-	cards = Cards.query.all()
-	cardnames = []
-	cardurl = []
-	card_filter = 0
-	for card in cards:
-		split_text = re.split(r'\s+|[,;.-]\s*', card.text.lower())
-		for word in text_list:
-			if word in split_text:
-				card_filter = 1
-			else:
-				card_filter = 0
-				break
-		if card_filter == 1:
-			cardnames.append(card.name)
-			cardurl.append(card.img_url)
-	return jsonify(dict(names = cardnames, url = cardurl))
+	print text
+	body = { "from": 0,"size": 50, "query": { "match": { "text":{ "query": text, "operator":"and"}}}}
+	url = 'http://127.0.0.1:9200/magic/card/_search'
+	headers = { 'Content-Type': 'application/json'}
+	r = requests.get(url, headers = headers, data = json.dumps(body))
+	response =  json.loads(r.text).get('hits')
+	total = response['total']
+	hits = response['hits']
+	cards = []
+	for hit in hits:
+		source = hit.get('_source', '')
+		name = source.get('name', '')
+		url = source.get('url', '')
+		cards.append(dict(name = name, url = url))
+	cards.append(dict(total = total))
+	return jsonify(cards)
+
+	
 # --------------------------------------------------------------
 
 # SHOWING CARDS BY SUBTYPES
