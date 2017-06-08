@@ -108,25 +108,21 @@ def show_card_by_text():
 def show_card_by_subtypes():
 
 	subtypes = request.args.get('subtypes','')
-	subtypes_list = subtypes.split(',')
-	subtype_column = Subtypes.query.filter_by(subtype = subtypes_list[0]).first()
-	cardnames = []
-	cardurl = []
-	subtype_filter= 0 # Guarantee that all subtypes are in the card at once
-	for card in subtype_column.subtypescards:
-		tostring = []
-		for subtype in card.subtypes_ref:
-			tostring.append(str(subtype))
-		for subtype in subtypes_list:
-			if subtype in tostring:
-				subtype_filter = 1
-			else:
-				subtype_filter = 0
-				break
-		if subtype_filter == 1:
-			cardnames.append(card.name)
-			cardurl.append(card.img_url)
-	return jsonify(dict(names = cardnames, url = cardurl))
+	body = { "from": 0,"size": 50, "query": { "match": { "subtypes":{ "query": subtypes, "operator":"and"}}}}
+	url = 'http://127.0.0.1:9200/magic/card/_search'
+	headers = { 'Content-Type': 'application/json'}
+	r = requests.get(url, headers = headers, data = json.dumps(body))
+	response =  json.loads(r.text).get('hits')
+	total = response['total']
+	hits = response['hits']
+	cards = []
+	for hit in hits:
+		source = hit.get('_source', '')
+		name = source.get('name', '')
+		url = source.get('url', '')
+		cards.append(dict(name = name, url = url))
+	cards.append(dict(total = total))
+	return jsonify(cards)
 	
 # --------------------------------------------------------------
 
@@ -195,6 +191,7 @@ def show_card_by_types():
 	headers = { 'Content-Type': 'application/json'}
 	r = requests.get(url, headers = headers, data = json.dumps(body))
 	response =  json.loads(r.text).get('hits')
+	total = response['total']
 	hits = response['hits']
 	cards = []
 	for hit in hits:
@@ -202,6 +199,7 @@ def show_card_by_types():
 		name = source.get('name', '')
 		url = source.get('url', '')
 		cards.append(dict(name = name, url = url))
+	cards.append(dict(total = total))
 	return jsonify(cards)
 
 # --------------------------------------------------------------
