@@ -172,13 +172,21 @@ def show_card_by_manacost():
 	manacost = request.args.get('manacost','')
 	manacost_sorted = sorted(manacost)
 	manacost_sorted = ''.join(manacost_sorted)
-	cardnames = []
-	cardurl = []
-	cards = Cards.query.filter_by(mana_cost = manacost_sorted).all()
-	for card in cards:
-		cardnames.append(card.name)
-		cardurl.append(card.img_url)
-	return jsonify(dict(names = cardnames,url = cardurl))
+	body = json.dumps({ "query": { "match": { "manaCost": manacost_sorted}} })
+	url = 'http://127.0.0.1:9200/magic/card/_search'
+	headers = { 'Content-Type': 'application/json'}
+	r = requests.get(url, headers = headers, data = body)
+	response =  json.loads(r.text).get('hits')
+	total = response['total']
+	hits = response['hits']
+	cards = []
+	for hit in hits:
+		source = hit.get('_source', '')
+		name = source.get('name', '')
+		url = source.get('url', '')
+		cards.append(dict(name = name, url = url))
+	cards.append(dict(total = total))
+	return jsonify(cards)
 # --------------------------------------------------------------
 
 # SHOWING CARDS BY TYPES
