@@ -44,24 +44,30 @@ def show_card_by_name():
 def show_card_colors():
 
   	colors = request.args.get('colors', '')
-  	page = int(request.args.get('page', 1))
- 	colors_list = colors.split(',')
-  	last_card = (page*100)+1
-	color_t= Colors.query.filter_by(color = colors_list[0]).first()
-	if page > 1:
-		first_card = last_card - 101
-	else:
-		first_card = 0
-  	cardnames = []
-  	cardurl = []
-	for card in color_t.colorcards:
-  		tostring = []
-		for color in card.colors_ref:
-			tostring.append(str(color))
-		if sorted(tostring) == sorted(colors_list):
-			cardnames.append(card.name)
-			cardurl.append(card.img_url)
-	return jsonify(dict(names = cardnames[first_card:last_card], url = cardurl[first_card:last_card]))
+  	colors = colors.split(',')
+  	colors_keyword = ''
+	for color in colors:
+		if color == 'Blue':
+			colors_keyword += 'U'
+		else:
+			colors_keyword += color[0]
+	colors_keyword = sorted(colors_keyword)
+	colors_keyword = ''.join(colors_keyword)
+	body = {"from": 0,"size": 50,"query": {"nested": {"path": "colors","query": {"bool": {"must": [{ "match": { "colors.colors_keyword": colors_keyword }}]}}}}}
+	url = 'http://127.0.0.1:9200/magic/card/_search'
+	headers = { 'Content-Type': 'application/json'}
+	r = requests.get(url, headers = headers, data = json.dumps(body))
+	response =  json.loads(r.text).get('hits')
+	total = response['total']
+	hits = response['hits']
+	cards = []
+	for hit in hits:
+		source = hit.get('_source', '')
+		name = source.get('name', '')
+		url = source.get('url', '')
+		cards.append(dict(name = name, url = url))
+	cards.append(dict(total = total))
+	return jsonify(cards)
 # --------------------------------------------------------------
 
 # SHOW CARD USERS
@@ -172,7 +178,7 @@ def show_card_by_manacost():
 	manacost = request.args.get('manacost','')
 	manacost_sorted = sorted(manacost)
 	manacost_sorted = ''.join(manacost_sorted)
-	body = json.dumps({ "query": { "match": { "manaCost": manacost_sorted}} })
+	body = json.dumps({ "from": 0,"size": 50,"query": { "match": { "manaCost": manacost_sorted}} })
 	url = 'http://127.0.0.1:9200/magic/card/_search'
 	headers = { 'Content-Type': 'application/json'}
 	r = requests.get(url, headers = headers, data = body)
