@@ -238,7 +238,27 @@ def show_card_by_mana_color():
 			colors_keyword += color[0]
 	colors_keyword = sorted(colors_keyword)
 	colors_keyword = ''.join(colors_keyword)
-	body = {"from": 0,"size": 50,"query": {"bool": {"must": [{"match": {"manaCost": manacost_sorted}},{"nested": {"path": "colors","query": {"match": {"colors.colors_keyword":colors_keyword}}}}]}}}
+	body = {"from": 0,"size": 50,
+			"query": {
+				"bool": {
+					"must": [{
+						"match": {
+							"manaCost": manacost_sorted}
+							},
+							{"nested": {
+								"path": "colors",
+								"query": {
+									"match": {
+									"colors.colors_keyword":colors_keyword
+									}	
+								}
+							}
+							}
+						]
+					}
+				}
+			}
+
 	url = 'http://127.0.0.1:9200/magic/card/_search'
 	headers = { 'Content-Type': 'application/json'}
 	r = requests.get(url, headers = headers, data = json.dumps(body))
