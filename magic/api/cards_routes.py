@@ -226,19 +226,31 @@ def show_card_by_types():
 def show_card_by_mana_color():
 
 	manacost = request.args.get('manacost','')
-	cardnames = []
-	cardurl = []
+	manacost_sorted = sorted(manacost)
+	manacost_sorted = ''.join(manacost_sorted)
 	colors = request.args.get('colors','')
 	colors_list = colors.split(',')
-	if len(colors_list) > 1:
-		colors_list = sorted(colors_list)
-	card_from_manacost = Cards.query.filter_by( mana_cost = manacost).all()
-	for card in card_from_manacost:
-		tostring = []
-		for color in card.colors_ref:
-			tostring.append(str(color))
-		if sorted(tostring) == colors_list:
-			cardnames.append(card.name)
-			cardurl.append(card.img_url)
-	return jsonify(dict(names = cardnames, url = cardurl))
+	colors_keyword = ''
+	for color in colors_list:
+		if color == 'Blue':
+			colors_keyword += 'U'
+		else:
+			colors_keyword += color[0]
+	colors_keyword = sorted(colors_keyword)
+	colors_keyword = ''.join(colors_keyword)
+	body = {"from": 0,"size": 50,"query": {"bool": {"must": [{"match": {"manaCost": manacost_sorted}},{"nested": {"path": "colors","query": {"match": {"colors.colors_keyword":colors_keyword}}}}]}}}
+	url = 'http://127.0.0.1:9200/magic/card/_search'
+	headers = { 'Content-Type': 'application/json'}
+	r = requests.get(url, headers = headers, data = json.dumps(body))
+	response =  json.loads(r.text).get('hits')
+	total = response['total']
+	hits = response['hits']
+	cards = []
+	for hit in hits:
+		source = hit.get('_source', '')
+		name = source.get('name', '')
+		url = source.get('url', '')
+		cards.append(dict(name = name, url = url))
+	cards.append(dict(total = total))
+	return jsonify(cards)
 # --------------------------------------------------------------
