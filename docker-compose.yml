@@ -10,3 +10,13 @@ services:
 #    image: "nginx:latest"
 #      ports:
 #      - "5000:80"
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:5.4.1
+    environment: ['http.host=0.0.0.0', 'transport.host=127.0.0.1']
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    volumes:
+      - data-volume:/usr/share/elasticsearch/data
+volumes:
+  data-volume:

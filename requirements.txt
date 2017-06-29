@@ -16,3 +16,4 @@ Werkzeug==0.12.1
 wheel==0.29.0
 gunicorn==19.7.1
 flask-cors==3.0.2
+elasticsearch==5.4.0

@@ -2,7 +2,9 @@ from magic import db
 from magic.models.tables import Cards, Users, Colors, Types, Subtypes
 from flask import request, jsonify, Blueprint, json
 import re
-import requests
+from elasticsearch import Elasticsearch
+
+es = Elasticsearch()
 
 cards_blueprint = Blueprint('cards_routes', __name__)
 
@@ -29,13 +31,8 @@ def show_card_by_name():
 
 	name = request.args.get('name','')
 	body = json.dumps({ "query": { "match": { "name": name}} })
-	url = 'http://127.0.0.1:9200/magic/card/_search'
-	headers = { 'Content-Type': 'application/json'}
-	r = requests.get(url, headers = headers, data = body)
-	response =  json.loads(r.text).get('hits')
-	hits = response['hits'][0]
-	data = hits.get('_source')
-	return jsonify(data)
+	r = es.search(index = 'magic', body = body)
+	return jsonify(r['hits']['hits'][0]['_source'])
 # --------------------------------------------------------------
 
 # SHOWING CARDS BY COLOR
@@ -54,12 +51,9 @@ def show_card_colors():
 	colors_keyword = sorted(colors_keyword)
 	colors_keyword = ''.join(colors_keyword)
 	body = {"from": 0,"size": 50,"query": {"nested": {"path": "colors","query": {"bool": {"must": [{ "match": { "colors.colors_keyword": colors_keyword }}]}}}}}
-	url = 'http://127.0.0.1:9200/magic/card/_search'
-	headers = { 'Content-Type': 'application/json'}
-	r = requests.get(url, headers = headers, data = json.dumps(body))
-	response =  json.loads(r.text).get('hits')
-	total = response['total']
-	hits = response['hits']
+	r = es.search(index = 'magic', body = body)
+	total = r['hits']['total']
+	hits = r['hits']['hits']
 	cards = []
 	for hit in hits:
 		source = hit.get('_source', '')
@@ -90,12 +84,9 @@ def show_card_by_text():
 
 	text = request.args.get('text','')
 	body = { "from": 0,"size": 50, "query": { "match": { "text":{ "query": text, "operator":"and"}}}}
-	url = 'http://127.0.0.1:9200/magic/card/_search'
-	headers = { 'Content-Type': 'application/json'}
-	r = requests.get(url, headers = headers, data = json.dumps(body))
-	response =  json.loads(r.text).get('hits')
-	total = response['total']
-	hits = response['hits']
+	r = es.search(index = 'magic', body = body)
+	total = r['hits']['total']
+	hits = r['hits']['hits']
 	cards = []
 	for hit in hits:
 		source = hit.get('_source', '')
@@ -115,12 +106,9 @@ def show_card_by_subtypes():
 
 	subtypes = request.args.get('subtypes','')
 	body = { "from": 0,"size": 50, "query": { "match": { "subtypes":{ "query": subtypes, "operator":"and"}}}}
-	url = 'http://127.0.0.1:9200/magic/card/_search'
-	headers = { 'Content-Type': 'application/json'}
-	r = requests.get(url, headers = headers, data = json.dumps(body))
-	response =  json.loads(r.text).get('hits')
-	total = response['total']
-	hits = response['hits']
+	r = es.search(index = 'magic', body = body)
+	total = r['hits']['total']
+	hits = r['hits']['hits']
 	cards = []
 	for hit in hits:
 		source = hit.get('_source', '')
@@ -172,12 +160,9 @@ def show_card_by_sub_color_text():
 				}
 			}
 
-	url = 'http://127.0.0.1:9200/magic/card/_search'
-	headers = { 'Content-Type': 'application/json'}
-	r = requests.get(url, headers = headers, data = json.dumps(body))
-	response =  json.loads(r.text).get('hits')
-	total = response['total']
-	hits = response['hits']
+	r = es.search(index = 'magic', body = body)
+	total = r['hits']['total']
+	hits = r['hits']['hits']
 	cards = []
 	for hit in hits:
 		source = hit.get('_source', '')
@@ -198,12 +183,9 @@ def show_card_by_manacost():
 	manacost_sorted = sorted(manacost)
 	manacost_sorted = ''.join(manacost_sorted)
 	body = json.dumps({ "from": 0,"size": 50,"query": { "match": { "manaCost": manacost_sorted}} })
-	url = 'http://127.0.0.1:9200/magic/card/_search'
-	headers = { 'Content-Type': 'application/json'}
-	r = requests.get(url, headers = headers, data = body)
-	response =  json.loads(r.text).get('hits')
-	total = response['total']
-	hits = response['hits']
+	r = es.search(index = 'magic', body = body)
+	total = r['hits']['total']
+	hits = r['hits']['hits']
 	cards = []
 	for hit in hits:
 		source = hit.get('_source', '')
@@ -221,12 +203,9 @@ def show_card_by_types():
 
 	types = request.args.get('types','')
 	body = { "from": 0,"size": 50, "query": { "match": { "types":{ "query": types, "operator":"and"}}}}
-	url = 'http://127.0.0.1:9200/magic/card/_search'
-	headers = { 'Content-Type': 'application/json'}
-	r = requests.get(url, headers = headers, data = json.dumps(body))
-	response =  json.loads(r.text).get('hits')
-	total = response['total']
-	hits = response['hits']
+	r = es.search(index = 'magic', body = body)
+	total = r['hits']['total']
+	hits = r['hits']['hits']
 	cards = []
 	for hit in hits:
 		source = hit.get('_source', '')
@@ -278,12 +257,9 @@ def show_card_by_mana_color():
 				}
 			}
 
-	url = 'http://127.0.0.1:9200/magic/card/_search'
-	headers = { 'Content-Type': 'application/json'}
-	r = requests.get(url, headers = headers, data = json.dumps(body))
-	response =  json.loads(r.text).get('hits')
-	total = response['total']
-	hits = response['hits']
+	r = es.search(index = 'magic', body = body)		
+	total = r['hits']['total']
+	hits = r['hits']['hits']
 	cards = []
 	for hit in hits:
 		source = hit.get('_source', '')
