@@ -4,7 +4,7 @@ from flask import request, jsonify, Blueprint, json
 import re
 from elasticsearch import Elasticsearch
 
-es = Elasticsearch()
+es = Elasticsearch(['http://elastic:changeme@elasticsearch'])
 
 cards_blueprint = Blueprint('cards_routes', __name__)
 
