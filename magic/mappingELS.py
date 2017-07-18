@@ -8,7 +8,7 @@
 		"dynamic":"false",
 		 "properties": {
 			"name": {
-				"type": "keyword"
+				"type": "text"
 			},
 			"manaCost": {
 				"type": "keyword"

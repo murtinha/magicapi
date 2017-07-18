@@ -30,9 +30,19 @@ def welcome_page():
 def show_card_by_name():
 
 	name = request.args.get('name','')
-	body = json.dumps({ "query": { "match": { "name": name}} })
-	r = es.search(index = 'magic', body = body)
-	return jsonify(r['hits']['hits'][0]['_source'])
+	body = { "from": 0,"size": 50, "query": { "match": { "name":{ "query": name, "operator":"and"}}}}
+        r = es.search(index = 'magic', body = body)
+        total = r['hits']['total']
+	hits = r['hits']['hits']
+	cards = []
+	for hit in hits:
+		source = hit.get('_source', '')
+		name = source.get('name', '')
+		url = source.get('url', '')
+		cards.append(dict(name = name, url = url))
+	cards.append(dict(total = total))
+	return jsonify(cards)
+
 # --------------------------------------------------------------
 
 # SHOWING CARDS BY COLOR
