@@ -106,7 +106,7 @@ def show_card_by_text():
 
         page = (int(request.args.get('page',1))-1)*50
 	text = request.args.get('text','')
-	body = { "from": 0,"size": 50, "query": { "match": { "text":{ "query": text, "operator":"and"}}}}
+	body = { "from": page,"size": 50, "query": { "match": { "text":{ "query": text, "operator":"and"}}}}
 	r = es.search(index = 'magic', body = body)
 	total = r['hits']['total']
 	hits = r['hits']['hits']
@@ -134,7 +134,7 @@ def show_card_by_subtypes():
 
         page = (int(request.args.get('page',1))-1)*50
 	subtypes = request.args.get('subtypes','')
-	body = { "from": 0,"size": 50, "query": { "match": { "subtypes":{ "query": subtypes, "operator":"and"}}}}
+	body = { "from": page,"size": 50, "query": { "match": { "subtypes":{ "query": subtypes, "operator":"and"}}}}
 	r = es.search(index = 'magic', body = body)
 	total = r['hits']['total']
 	hits = r['hits']['hits']
@@ -171,7 +171,7 @@ def show_card_by_sub_color_text():
 			colors_keyword += color[0]
 	colors_keyword = sorted(colors_keyword)
 	colors_keyword = ''.join(colors_keyword)
-	body = {"from": 0,"size": 50,
+	body = {"from": page,"size": 50,
 			"query": {
 				"bool": {
 					"must": [{
@@ -220,10 +220,11 @@ def show_card_by_sub_color_text():
 @cards_blueprint.route('/manacost/')
 def show_card_by_manacost():
 
+        page = (int(request.args.get('page',1))-1)*50
 	manacost = request.args.get('manacost','')
 	manacost_sorted = sorted(manacost)
 	manacost_sorted = ''.join(manacost_sorted)
-	body = json.dumps({ "from": 0,"size": 50,"query": { "match": { "manaCost": manacost_sorted}} })
+	body = json.dumps({ "from": page,"size": 50,"query": { "match": { "manaCost": manacost_sorted}} })
 	r = es.search(index = 'magic', body = body)
 	total = r['hits']['total']
 	hits = r['hits']['hits']
@@ -233,7 +234,12 @@ def show_card_by_manacost():
 		name = source.get('name', '')
 		url = source.get('url', '')
 		cards.append(dict(name = name, url = url))
-	cards.append(dict(total = total))
+        pages = total/50
+        if pages == 0:
+          pages = 1
+        elif total%50 != 0:
+          pages+=1
+        cards.append(dict(total = total, pages = pages, page = request.args.get('page',1)))
 	return jsonify(cards)
 # --------------------------------------------------------------
 
@@ -242,8 +248,9 @@ def show_card_by_manacost():
 @cards_blueprint.route('/types/')
 def show_card_by_types():
 
+        page = (int(request.args.get('page',1))-1)*50
 	types = request.args.get('types','')
-	body = { "from": 0,"size": 50, "query": { "match": { "types":{ "query": types, "operator":"and"}}}}
+	body = { "from": page,"size": 50, "query": { "match": { "types":{ "query": types, "operator":"and"}}}}
 	r = es.search(index = 'magic', body = body)
 	total = r['hits']['total']
 	hits = r['hits']['hits']
@@ -253,7 +260,12 @@ def show_card_by_types():
 		name = source.get('name', '')
 		url = source.get('url', '')
 		cards.append(dict(name = name, url = url))
-	cards.append(dict(total = total))
+	pages = total/50
+        if pages == 0:
+          pages = 1
+        elif total%50 != 0:
+          pages+=1
+        cards.append(dict(total = total, pages = pages, page = request.args.get('page',1)))
 	return jsonify(cards)
 
 # --------------------------------------------------------------
@@ -264,6 +276,7 @@ def show_card_by_types():
 @cards_blueprint.route('/manacost/colors/')
 def show_card_by_mana_color():
 
+        page = (int(request.args.get('page',1))-1)*50
 	manacost = request.args.get('manacost','')
 	manacost_sorted = sorted(manacost)
 	manacost_sorted = ''.join(manacost_sorted)
@@ -277,7 +290,7 @@ def show_card_by_mana_color():
 			colors_keyword += color[0]
 	colors_keyword = sorted(colors_keyword)
 	colors_keyword = ''.join(colors_keyword)
-	body = {"from": 0,"size": 50,
+	body = {"from": page,"size": 50,
 			"query": {
 				"bool": {
 					"must": [{
@@ -307,6 +320,11 @@ def show_card_by_mana_color():
 		name = source.get('name', '')
 		url = source.get('url', '')
 		cards.append(dict(name = name, url = url))
-	cards.append(dict(total = total))
-	return jsonify(cards)
+	pages = total/50
+        if pages == 0:
+          pages = 1
+        elif total%50 != 0:
+          pages+=1
+        cards.append(dict(total = total, pages = pages, page = request.args.get('page',1)))
+        return jsonify(cards)
 # --------------------------------------------------------------
