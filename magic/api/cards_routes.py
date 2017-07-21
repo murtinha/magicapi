@@ -28,9 +28,10 @@ def welcome_page():
 
 @cards_blueprint.route('/name/', methods = ['GET'])
 def show_card_by_name():
-
+        
+        page = (int(request.args.get('page',1))-1)*50
 	name = request.args.get('name','')
-	body = { "from": 0,"size": 50, "query": { "match": { "name":{ "query": name, "operator":"and"}}}}
+	body = { "from": page,"size": 50, "query": { "match": { "name":{ "query": name, "operator":"and"}}}}
         r = es.search(index = 'magic', body = body)
         total = r['hits']['total']
 	hits = r['hits']['hits']
@@ -40,7 +41,12 @@ def show_card_by_name():
 		name = source.get('name', '')
 		url = source.get('url', '')
 		cards.append(dict(name = name, url = url))
-	cards.append(dict(total = total))
+        pages = total/50
+        if pages == 0:
+            pages = 1
+        elif total%50 != 0:
+            pages+=1
+	cards.append(dict(total = total,page = request.args.get('page',1),pages = pages))
 	return jsonify(cards)
 
 # --------------------------------------------------------------
@@ -50,6 +56,7 @@ def show_card_by_name():
 @cards_blueprint.route('/colors/')
 def show_card_colors():
 
+        page = (int(request.args.get('page',1))-1)*50
   	colors = request.args.get('colors', '')
   	colors = colors.split(',')
   	colors_keyword = ''
@@ -60,7 +67,7 @@ def show_card_colors():
 			colors_keyword += color[0]
 	colors_keyword = sorted(colors_keyword)
 	colors_keyword = ''.join(colors_keyword)
-	body = {"from": 0,"size": 50,"query": {"nested": {"path": "colors","query": {"bool": {"must": [{ "match": { "colors.colors_keyword": colors_keyword }}]}}}}}
+	body = {"from": page,"size": 50,"query": {"nested": {"path": "colors","query": {"bool": {"must": [{ "match": { "colors.colors_keyword": colors_keyword }}]}}}}}
 	r = es.search(index = 'magic', body = body)
 	total = r['hits']['total']
 	hits = r['hits']['hits']
@@ -70,7 +77,12 @@ def show_card_colors():
 		name = source.get('name', '')
 		url = source.get('url', '')
 		cards.append(dict(name = name, url = url))
-	cards.append(dict(total = total))
+        pages = total/50
+        if pages == 0:
+            pages = 1
+        elif total%50 != 0:
+            pages+=1
+	cards.append(dict(total = total,pages = pages,page = request.args.get('page',1)))
 	return jsonify(cards)
 # --------------------------------------------------------------
 
@@ -92,6 +104,7 @@ def show_card_users():
 @cards_blueprint.route('/text/')
 def show_card_by_text():
 
+        page = (int(request.args.get('page',1))-1)*50
 	text = request.args.get('text','')
 	body = { "from": 0,"size": 50, "query": { "match": { "text":{ "query": text, "operator":"and"}}}}
 	r = es.search(index = 'magic', body = body)
@@ -103,7 +116,12 @@ def show_card_by_text():
 		name = source.get('name', '')
 		url = source.get('url', '')
 		cards.append(dict(name = name, url = url))
-	cards.append(dict(total = total))
+	pages = total/50
+        if pages == 0:
+            pages = 1
+        elif total%50 != 0:
+            pages+=1
+	cards.append(dict(total = total,pages = pages,page = request.args.get('page',1)))
 	return jsonify(cards)
 
 	
@@ -114,6 +132,7 @@ def show_card_by_text():
 @cards_blueprint.route('/subtypes/')
 def show_card_by_subtypes():
 
+        page = (int(request.args.get('page',1))-1)*50
 	subtypes = request.args.get('subtypes','')
 	body = { "from": 0,"size": 50, "query": { "match": { "subtypes":{ "query": subtypes, "operator":"and"}}}}
 	r = es.search(index = 'magic', body = body)
@@ -125,8 +144,13 @@ def show_card_by_subtypes():
 		name = source.get('name', '')
 		url = source.get('url', '')
 		cards.append(dict(name = name, url = url))
-	cards.append(dict(total = total))
-	return jsonify(cards)
+        pages = total/50
+        if pages == 0:
+          pages = 1
+        elif total%50 != 0:
+          pages+=1
+        cards.append(dict(total = total, pages = pages, page = request.args.get('page',1)))
+        return jsonify(cards)
 	
 # --------------------------------------------------------------
 
@@ -134,6 +158,8 @@ def show_card_by_subtypes():
 
 @cards_blueprint.route('/colors/text/')
 def show_card_by_sub_color_text():
+        
+        page = (int(request.args.get('page',1))-1)*50
 	text = request.args.get('text','')
 	colors = request.args.get('colors','')
 	colors_list = colors.split(',')
@@ -179,7 +205,12 @@ def show_card_by_sub_color_text():
 		name = source.get('name', '')
 		url = source.get('url', '')
 		cards.append(dict(name = name, url = url))
-	cards.append(dict(total = total))
+        pages = total/50
+        if pages == 0:
+          pages = 1
+        elif total%50 != 0:
+          pages+=1
+        cards.append(dict(total = total, pages = pages, page = request.args.get('page',1)))
 	return jsonify(cards)
 
 # --------------------------------------------------------------
