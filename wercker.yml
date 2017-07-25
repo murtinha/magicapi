@@ -49,10 +49,10 @@ build:
         code: |
           echo "python version $(python --version) running"
           echo "pip version $(pip --version) running"
-    - script:
-        name: python testing
-        code: |
-          PYTHONPATH=./ python magic/tests/tests.py
+    # - script:
+    #     name: python testing
+    #     code: |
+    #       PYTHONPATH=./ python magic/tests/tests.py
 deploy:
   steps:
     - heroku-deploy:
